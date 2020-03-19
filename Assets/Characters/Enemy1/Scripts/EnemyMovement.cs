@@ -1,12 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Rigidbody2D rb;
-    public BoxCollider2D boxCollider;
 
+    /// <summary>
+    /// How many times per 1 second should enemy update his target.
+    /// </summary>
+    public float movementTargetUpdateRate = 2f;
+
+    public float movementSpeed = 3f;
+
+    /// <summary>
+    /// Minimal distance from player.
+    /// </summary>
+    public float movementRange = 5f;
+
+    Rigidbody2D rb;
+    BoxCollider2D boxCollider;
 
     Transform player;
 
@@ -14,11 +27,16 @@ public class EnemyMovement : MonoBehaviour
 
     bool facingRight;
 
+    float nextMovementTargetUpdateTime;
+
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         facingRight = true;
+        nextMovementTargetUpdateTime = 0;
     }
 
     // Update is called once per frame
@@ -27,6 +45,30 @@ public class EnemyMovement : MonoBehaviour
         playerDirection = player.position - transform.position;
 
         Flip();
+    }
+
+    void FixedUpdate()
+    {
+        if (IsFarFromPlayer())
+        {
+            rb.MovePosition(rb.position + playerDirection.normalized * movementSpeed * Time.fixedDeltaTime);
+            CalculateTimeToUpdateMovementTarget();
+        } else
+        {
+            // don't move if we're near the player
+            rb.MovePosition(rb.position);
+        }
+    }
+
+    private void CalculateTimeToUpdateMovementTarget()
+    {
+        nextMovementTargetUpdateTime = Time.time + 1f / movementTargetUpdateRate;
+    }
+
+    private bool IsFarFromPlayer()
+    {
+        Debug.Log(playerDirection.magnitude);
+        return (playerDirection).magnitude > movementRange;
     }
 
     void Flip()
