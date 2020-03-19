@@ -23,6 +23,8 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     public int maxHP = 100;
 
+    public HealthBar healthBar;
+
     private int currentHP;
 
     Rigidbody2D rb;
@@ -39,6 +41,7 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
+        healthBar.SetHealth(currentHP);
         if (currentHP <= 0)
         {
             Die();
@@ -55,6 +58,7 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         currentHP = maxHP;
+        healthBar.SetMaxHealth(currentHP);
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         facingRight = true;
@@ -95,7 +99,7 @@ public class EnemyAI : MonoBehaviour
 
     private bool IsFarFromPlayer()
     {
-        return (playerDirection).magnitude > movementRange;
+        return player != null && (playerDirection).magnitude > movementRange;
     }
 
     void Flip()

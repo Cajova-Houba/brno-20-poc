@@ -40,9 +40,7 @@ public class CameraFollow : MonoBehaviour
         if ((cameraPos.x - cameraHalfWidth) > minX 
             && (cameraPos.x + cameraHalfWidth) < maxX)
         {
-            Debug.Log("Old camera pos: " + transform.position);
             transform.position = cameraPos;
-            Debug.Log("New camera pos: " + transform.position);
         }
     }
 }

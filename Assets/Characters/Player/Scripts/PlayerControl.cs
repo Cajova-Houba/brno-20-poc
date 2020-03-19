@@ -18,6 +18,7 @@ public class PlayerControl : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        Debug.Log("Player taking " + damage + " damage.");
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
 
@@ -33,11 +34,8 @@ public class PlayerControl : MonoBehaviour
     {
         Debug.Log("The player died.");
 
-        Debug.Log(transform.position);
-
         // spawn the dead player
         GameObject child = Instantiate(deadPlayer, transform.position, transform.rotation);
-        Debug.Log(child.transform.position);
 
         // destroy the player object
         Destroy(gameObject);
@@ -53,6 +51,9 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            TakeDamage(currentHealth);
+        }
     }
 }
