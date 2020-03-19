@@ -54,8 +54,9 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Camera\CameraFollow.cs" />
+     <Compile Include="Assets\Characters\Enemy1\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Characters\Enemy1\Scripts\EnemyAttack.cs" />
-     <Compile Include="Assets\Characters\Enemy1\Scripts\EnemyMovement.cs" />
+     <Compile Include="Assets\Characters\Enemy1\Scripts\EnemyHitBox.cs" />
      <Compile Include="Assets\Characters\Player\Scripts\PlayerAttack.cs" />
      <Compile Include="Assets\Characters\Player\Scripts\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\EnemySpawner.cs" />

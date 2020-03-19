@@ -52,6 +52,7 @@ public class EnemySpawner : MonoBehaviour
 
     private bool IsTimeToSpawn()
     {
-        return Time.time > nextSpawnTime;
+        // spawnRate == 0 => don't spawn anything
+        return Math.Abs(spawnRate - 0) > 0.001 && Time.time > nextSpawnTime;
     }
 }

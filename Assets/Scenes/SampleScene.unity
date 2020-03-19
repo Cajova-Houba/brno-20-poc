@@ -544,7 +544,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353454273}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.58, y: -0.33, z: -1}
+  m_LocalPosition: {x: 0.46, y: -0.41, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 564825150}
@@ -567,9 +567,9 @@ MonoBehaviour:
   meleeAttackRange: 0.5
   enemyLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   meleeAttackRate: 2
-  damage: 25
+  damage: 50
 --- !u!114 &1353454277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,12 +662,6 @@ Transform:
   m_Father: {fileID: 2097296631}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1527372766 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2090654383143390221, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-    type: 3}
-  m_PrefabInstance: {fileID: 2090654384301660115}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1544416376
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,7 +866,7 @@ Transform:
   - {fileID: 1356570902}
   - {fileID: 1195728874}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2097296632
 MonoBehaviour:
@@ -887,74 +881,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1353454275}
-  enemyPrefab: {fileID: 1527372766}
-  spawnRate: 1
---- !u!1001 &2090654384301660115
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2090654383143390221, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_Name
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.0301808
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2090654383143390259, guid: 37642df103b5f0a4abfd1aeefb8f6541,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 37642df103b5f0a4abfd1aeefb8f6541, type: 3}
+  enemyPrefab: {fileID: 2090654383143390221, guid: 37642df103b5f0a4abfd1aeefb8f6541,
+    type: 3}
+  spawnRate: 0.2

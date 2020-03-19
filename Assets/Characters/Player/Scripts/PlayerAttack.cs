@@ -31,7 +31,7 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool isAttacking = Input.GetKeyDown(KeyCode.LeftShift);
+        bool isAttacking = Input.GetKeyDown(KeyCode.LeftControl);
 
         if (isAttacking)
         {
@@ -57,7 +57,15 @@ public class PlayerAttack : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("Hit " + enemy.name);
-            //enemy.GetComponent<Enem>().TakeDamage(damage);
+            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+            if (enemyAI != null)
+            {
+                enemyAI.TakeDamage(damage);
+            }
+
+            // attack only 1 enemy
+            break;
+
         }
 
         CalculateNextAttackTime();
