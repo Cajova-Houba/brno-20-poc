@@ -57,7 +57,6 @@ public class EnemyAI : MonoBehaviour
         currentHP = maxHP;
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
         facingRight = true;
         nextMovementTargetUpdateTime = 0;
     }
@@ -65,9 +64,15 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerDirection = player.position - transform.position;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
 
-        Flip();
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+            playerDirection = player.position - transform.position;
+
+            Flip();
+        }
     }
 
     void FixedUpdate()

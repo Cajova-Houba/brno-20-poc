@@ -177,6 +177,7 @@ MonoBehaviour:
   movementTargetUpdateRate: 2
   movementSpeed: 2.5
   movementRange: 0.5
+  maxHP: 100
 --- !u!114 &2090654383143390263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +191,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackPoint: {fileID: 2090654382675614349}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  attackRate: 1
+  damage: 30
   meleeAttackRange: 0.5
 --- !u!61 &2626073807051235783
 BoxCollider2D:
