@@ -10,6 +10,9 @@ public class EnemySpawner : MonoBehaviour
 
     public GameObject kozaak;
     public GameObject husaak;
+    public GameObject prasaak;
+
+    public int enemyTypeCount = 3;
 
     GameObject[] spawnPoints;
     
@@ -47,11 +50,12 @@ public class EnemySpawner : MonoBehaviour
 
     private GameObject PickRandomEnemyToSpawn()
     {
-        int r = random.Next(2);
+        int r = random.Next(enemyTypeCount);
         switch(r)
         {
             case 0: return husaak;
             case 1: return kozaak;
+            case 2: return prasaak;
             default: return husaak;
 
         }
