@@ -8,7 +8,8 @@ public class EnemySpawner : MonoBehaviour
 
     public Transform player;
 
-    public GameObject enemyPrefab;
+    public GameObject kozaak;
+    public GameObject husaak;
 
     GameObject[] spawnPoints;
     
@@ -19,11 +20,14 @@ public class EnemySpawner : MonoBehaviour
 
     float nextSpawnTime = 0;
 
+    System.Random random;
+
 
     // Start is called before the first frame update
     void Start()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        random = new System.Random();
     }
 
     // Update is called once per frame
@@ -32,12 +36,25 @@ public class EnemySpawner : MonoBehaviour
         if (IsTimeToSpawn())
         {
             Transform spawnPoint = PickRandomSpawnPoint();
+            GameObject enemy = PickRandomEnemyToSpawn();
             Debug.Log("Spawning: "+spawnPoint.position + " ; " + spawnPoint.rotation);
-            Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            Instantiate(enemy, spawnPoint.position, spawnPoint.rotation);
 
             CalculateSpawnTime();
         }
 
+    }
+
+    private GameObject PickRandomEnemyToSpawn()
+    {
+        int r = random.Next(2);
+        switch(r)
+        {
+            case 0: return husaak;
+            case 1: return kozaak;
+            default: return husaak;
+
+        }
     }
 
     private Transform PickRandomSpawnPoint()
