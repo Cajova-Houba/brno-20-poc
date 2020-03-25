@@ -30,6 +30,11 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    public void Kill()
+    {
+        TakeDamage(currentHealth);
+    }
+
     private void Die()
     {
         Debug.Log("The player died.");
