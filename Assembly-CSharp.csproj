@@ -63,7 +63,9 @@
      <Compile Include="Assets\Characters\Player\Scripts\PlayerMovement.cs" />
      <Compile Include="Assets\Characters\Salinka\Scripts\SalinatorAI.cs" />
      <Compile Include="Assets\Characters\Salinka\Scripts\SalinatorSpawner.cs" />
+     <Compile Include="Assets\Powerups\Smazo\Scripts\SmazoPowerup.cs" />
      <Compile Include="Assets\Scripts\EnemySpawner.cs" />
+     <Compile Include="Assets\Scripts\Generic\AbstractPoweup.cs" />
      <Compile Include="Assets\Scripts\Generic\AbstractSpawner.cs" />
      <Compile Include="Assets\Scripts\HealthBar.cs" />
  <Reference Include="Cinemachine">

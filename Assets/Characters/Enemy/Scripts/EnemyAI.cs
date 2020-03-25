@@ -29,6 +29,8 @@ public class EnemyAI : MonoBehaviour
 
     public bool facingRight = true;
 
+    public GameObject powerup;
+
     Rigidbody2D rb;
     BoxCollider2D boxCollider;
 
@@ -37,6 +39,8 @@ public class EnemyAI : MonoBehaviour
     Vector2 playerDirection;
 
     float nextMovementTargetUpdateTime;
+
+    System.Random random;
     
     public void TakeDamage(int damage)
     {
@@ -51,7 +55,16 @@ public class EnemyAI : MonoBehaviour
     private void Die()
     {
         Debug.Log("Dying");
+        SpawnPowerup();
         Destroy(gameObject);
+    }
+
+    private void SpawnPowerup()
+    {
+        if (random.Next(2) != 0 )
+        {
+            Instantiate(powerup, transform.position, transform.rotation);
+        }
     }
 
     // Start is called before the first frame update
@@ -62,6 +75,7 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         nextMovementTargetUpdateTime = 0;
+        random = new System.Random();
     }
 
     // Update is called once per frame

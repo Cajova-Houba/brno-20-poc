@@ -261,6 +261,7 @@ MonoBehaviour:
   maxHP: 100
   healthBar: {fileID: 3751920705834692980}
   facingRight: 1
+  powerup: {fileID: 8011883047793900344, guid: 0319881b0b8d6444cb577192e39b540d, type: 3}
 --- !u!114 &2090654383143390263
 MonoBehaviour:
   m_ObjectHideFlags: 0

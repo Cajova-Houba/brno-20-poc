@@ -35,6 +35,13 @@ public class PlayerControl : MonoBehaviour
         TakeDamage(currentHealth);
     }
 
+
+    public void Heal(int hp)
+    {
+        currentHealth = Math.Min(maxHealth, currentHealth + hp);
+        healthBar.SetHealth(currentHealth);
+    }
+
     private void Die()
     {
         Debug.Log("The player died.");

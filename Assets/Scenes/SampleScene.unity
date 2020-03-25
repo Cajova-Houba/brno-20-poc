@@ -844,7 +844,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1353454275}
   - component: {fileID: 1353454274}
-  - component: {fileID: 1353454279}
   - component: {fileID: 1353454278}
   - component: {fileID: 1353454277}
   - component: {fileID: 1353454276}
@@ -953,7 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc40c9e47deaa8843b0e8d9caec572ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxCollider: {fileID: 1353454279}
+  boxCollider: {fileID: 0}
   rb: {fileID: 1353454278}
   movementSpeed: 3
 --- !u!50 &1353454278
@@ -977,32 +976,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &1353454279
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1353454273}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.6}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5833333, y: 1.4166666}
-    newSize: {x: 0.7, y: 1.7}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.1}
-  m_EdgeRadius: 0
 --- !u!114 &1353454280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,7 +988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf464dd94a2133f4baaf70a97c600e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
   healthBar: {fileID: 1617634496}
   deadPlayer: {fileID: 1172915856559196619, guid: dc43d68ee2cb6754cbe1502c7567655b,
     type: 3}
@@ -1678,7 +1651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae444e7d7b06164bbc76547683614fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 0.5
+  spawnRate: 0
   salina: {fileID: 3197793690771045499, guid: 9e8b4c7f0ae63ff46aa37b6eb0b4f2c8, type: 3}
 --- !u!4 &2065623834
 Transform:
@@ -1743,7 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2726ecc4e4fc0a34c9b3152a6b3148f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 0
+  spawnRate: 0.5
   kozaak: {fileID: 971907858246904800, guid: a596b2b7fc8511c43ba2bb9d8da50a0a, type: 3}
   husaak: {fileID: 676880579188962911, guid: 3f5efb4fc4cf53e4f92bec1b2da7668f, type: 3}
   prasaak: {fileID: 29161693006076863, guid: 4426bff2571400842b302531bcc84cdc, type: 3}
