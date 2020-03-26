@@ -58,6 +58,7 @@ public class EnemyAttack : MonoBehaviour
         foreach (Collider2D playerCol in hitEnemies)
         {
             Debug.Log("Hiting " + playerCol.name);
+            PlayAttackAnimation();
             PlayerControl player = playerCol.GetComponent<PlayerControl>();
             if (player != null)
             {
@@ -68,6 +69,11 @@ public class EnemyAttack : MonoBehaviour
             break;
 
         }
+    }
+
+    private void PlayAttackAnimation()
+    {
+        // todo:
     }
 
     private bool IsTimeToAttack()

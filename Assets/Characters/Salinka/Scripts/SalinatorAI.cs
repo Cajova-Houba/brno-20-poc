@@ -57,11 +57,12 @@ public class SalinatorAI : MonoBehaviour
         Debug.Log(otherCollider.name);
 
         // must make sure that we hit player's hit box
-        PlayerControl pc = otherCollider.GetComponentInParent<PlayerControl>();
-        if ( pc != null && otherCollider.gameObject.layer == LayerMask.NameToLayer("PlayerHitbox"))
+        AbstractCharacter hitCharacter = otherCollider.GetComponentInParent<AbstractCharacter>();
+
+        if (hitCharacter != null && otherCollider.gameObject.layer == LayerMask.NameToLayer("SalinaHitbox"))
         {
-            Debug.Log("Salina hit");
-            pc.Kill();
+            Debug.Log("Salina hits " + hitCharacter.name);
+            hitCharacter.Kill();
         }
     }
 }
