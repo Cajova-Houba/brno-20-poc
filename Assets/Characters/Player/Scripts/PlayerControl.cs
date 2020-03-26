@@ -3,69 +3,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+/// <summary>
+/// Handles movements and holds player's HP.
+/// </summary>
+public class PlayerControl : AbstractCharacter
 {
-    public int maxHealth = 100;
 
-    public HealthBar healthBar;
+    public BoxCollider2D boxCollider;
 
     /// <summary>
     /// Prefab of the dead player object that is to be spawned when the player dies.
     /// </summary>
     public GameObject deadPlayer;
 
-    int currentHealth;
-
-    public void TakeDamage(int damage)
+    protected override void Init()
     {
-        Debug.Log("Player taking " + damage + " damage.");
-        currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
-
-        Debug.Log(transform.position);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        
     }
 
-    public void Kill()
+    protected override void OnAfterMoved()
     {
-        TakeDamage(currentHealth);
     }
 
-
-    public void Heal(int hp)
+    protected override void OnDying()
     {
-        currentHealth = Math.Min(maxHealth, currentHealth + hp);
-        healthBar.SetHealth(currentHealth);
-    }
-
-    private void Die()
-    {
-        Debug.Log("The player died.");
-
         // spawn the dead player
         GameObject child = Instantiate(deadPlayer, transform.position, transform.rotation);
-
-        // destroy the player object
-        Destroy(gameObject);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    protected override bool ShouldMove()
     {
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(currentHealth);
+        // player should move anytime
+        return true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Delete))
+        movementDirection.x = Input.GetAxis("Horizontal");
+        movementDirection.y = Input.GetAxis("Vertical");
+    }
+
+    /// <summary>
+    /// Draw the box colider.
+    /// </summary>
+    void OnDrawGizmosSelected()
+    {
+        if (boxCollider == null)
         {
-            TakeDamage(currentHealth);
+            return;
         }
+
+        Gizmos.DrawWireCube(boxCollider.transform.position, boxCollider.offset);
     }
 }

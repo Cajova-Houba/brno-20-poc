@@ -255,12 +255,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 177fe79984659054aa32bbb0f1614bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementTargetUpdateRate: 2
-  movementSpeed: 2.5
-  movementRange: 0.5
   maxHP: 100
-  healthBar: {fileID: 3751920705834692980}
   facingRight: 1
+  movementSpeed: 2.5
+  rb: {fileID: 2090654383143390258}
+  healthBar: {fileID: 3751920705834692980}
+  movementTargetUpdateRate: 2
+  movementRange: 0.5
   powerup: {fileID: 8011883047793900344, guid: 0319881b0b8d6444cb577192e39b540d, type: 3}
 --- !u!114 &2090654383143390263
 MonoBehaviour:

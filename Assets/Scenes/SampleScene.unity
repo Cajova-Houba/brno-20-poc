@@ -865,7 +865,6 @@ GameObject:
   - component: {fileID: 1353454275}
   - component: {fileID: 1353454274}
   - component: {fileID: 1353454278}
-  - component: {fileID: 1353454277}
   - component: {fileID: 1353454276}
   - component: {fileID: 1353454281}
   - component: {fileID: 1353454280}
@@ -961,21 +960,6 @@ MonoBehaviour:
   meleeAttackRate: 2
   damage: 50
   animator: {fileID: 809520162}
---- !u!114 &1353454277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1353454273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc40c9e47deaa8843b0e8d9caec572ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boxCollider: {fileID: 0}
-  rb: {fileID: 1353454278}
-  movementSpeed: 3
 --- !u!50 &1353454278
 Rigidbody2D:
   serializedVersion: 4
@@ -1009,8 +993,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf464dd94a2133f4baaf70a97c600e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHP: 200
+  facingRight: 1
+  movementSpeed: 3
+  rb: {fileID: 1353454278}
   healthBar: {fileID: 1617634496}
+  boxCollider: {fileID: 1353454281}
   deadPlayer: {fileID: 1172915856559196619, guid: dc43d68ee2cb6754cbe1502c7567655b,
     type: 3}
 --- !u!61 &1353454281
