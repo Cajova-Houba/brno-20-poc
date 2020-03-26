@@ -516,6 +516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 809520160}
   - component: {fileID: 809520161}
+  - component: {fileID: 809520162}
   m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
@@ -585,6 +586,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &809520162
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809520159}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ad5ade2e897ecb94c80e358a4a2fcc82, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &940100854
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,6 +960,7 @@ MonoBehaviour:
     m_Bits: 256
   meleeAttackRate: 2
   damage: 50
+  animator: {fileID: 809520162}
 --- !u!114 &1353454277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1716,7 +1737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2726ecc4e4fc0a34c9b3152a6b3148f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 0.5
+  spawnRate: 0
   kozaak: {fileID: 971907858246904800, guid: a596b2b7fc8511c43ba2bb9d8da50a0a, type: 3}
   husaak: {fileID: 676880579188962911, guid: 3f5efb4fc4cf53e4f92bec1b2da7668f, type: 3}
   prasaak: {fileID: 29161693006076863, guid: 4426bff2571400842b302531bcc84cdc, type: 3}

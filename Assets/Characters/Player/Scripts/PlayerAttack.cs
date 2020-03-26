@@ -28,6 +28,8 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public int damage = 25;
 
+    public Animator animator;
+
     // Update is called once per frame
     void Update()
     {
@@ -49,6 +51,7 @@ public class PlayerAttack : MonoBehaviour
         // play melee attack animation
         // todo
         Debug.Log("Attacking");
+        animator.SetTrigger("attacking");
 
         // detect hit enemies
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, meleeAttackRange, enemyLayers);
