@@ -10,9 +10,27 @@ using UnityEngine;
 public abstract class AbstractCharacter : MonoBehaviour
 {
     /// <summary>
+    /// Movement speed parameter set in animator.
+    /// </summary>
+    public const string IS_MOVING_ANIM_NAME = "isMoving";
+
+    /// <summary>
+    /// Animator used for walking/idle animations.
+    /// 
+    /// Sets speed parameter.
+    /// 
+    /// </summary>
+    public Animator animator;
+
+    /// <summary>
     /// Max HP of this character.
     /// </summary>
     public int maxHP = 100;
+
+    /// <summary>
+    /// Character's energy. Used for skills etc.
+    /// </summary>
+    public int maxEnergy = 100;
 
     /// <summary>
     /// Dependes on the orientation of character sprite.
@@ -28,12 +46,16 @@ public abstract class AbstractCharacter : MonoBehaviour
 
     public HealthBar healthBar;
 
+    public HealthBar energyBar;
+
     /// <summary>
     /// Direction of the character's movement. Usually set in Update() method.
     /// </summary>
     protected Vector2 movementDirection;
 
     protected int currentHP;
+
+    protected int currentEnergy;
 
     /// <summary>
     /// Method that can be used by other scripts to damage this character.
@@ -44,7 +66,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     {
         Debug.Log(name + " taking " + damage + " damage.");
         currentHP -= damage;
-        healthBar.SetHealth(currentHP);
+        UpdateHealthBar(currentHP);
         if (currentHP <= 0)
         {
             Die();
@@ -66,7 +88,27 @@ public abstract class AbstractCharacter : MonoBehaviour
     public void Heal(int hp)
     {
         currentHP = Math.Min(maxHP, currentHP + hp);
-        healthBar.SetHealth(currentHP);
+        UpdateHealthBar(currentHP);
+    }
+
+    /// <summary>
+    /// Checks if the character has enough energy.
+    /// </summary>
+    /// <param name="requiredEnergy">Energy required by some action.</param>
+    /// <returns>True if currentEnergy >= requiredEnergy</returns>
+    public bool HasEnoughEnergy(int requiredEnergy)
+    {
+        return currentEnergy >= requiredEnergy;
+    }
+
+    /// <summary>
+    /// Uses given amount of energy.
+    /// </summary>
+    /// <param name="energy"></param>
+    public void UseEnergy(int energy)
+    {
+        currentEnergy = Math.Max(0, currentEnergy - energy);
+        UpdateEnergyBar(currentEnergy);
     }
 
     /// <summary>
@@ -103,12 +145,54 @@ public abstract class AbstractCharacter : MonoBehaviour
         }
     }
 
+    protected void SetAnimatorSpeedParameter(float speed)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(IS_MOVING_ANIM_NAME, (Math.Abs(speed) - 0) > 0.001);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         currentHP = maxHP;
-        healthBar.SetMaxHealth(currentHP);
+        currentEnergy = maxEnergy;
+        SetHealthBarMax(currentHP);
+        SetEnergyBarMax(currentEnergy);
         Init();
+    }
+
+    protected void UpdateEnergyBar(int newEnergy)
+    {
+        if (energyBar != null)
+        {
+            energyBar.SetHealth(newEnergy);
+        }
+    }
+
+    protected void UpdateHealthBar(int newHP)
+    {
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(newHP);
+        }
+    }
+
+    private void SetEnergyBarMax(int newMaxEnergy)
+    {
+        if (energyBar != null)
+        {
+            energyBar.SetMaxHealth(newMaxEnergy);
+        }
+    }
+
+    private void SetHealthBarMax(int newMaxHP)
+    {
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(newMaxHP);
+        }
     }
 
     void FixedUpdate()
@@ -116,6 +200,7 @@ public abstract class AbstractCharacter : MonoBehaviour
         if (ShouldMove())
         {
             rb.MovePosition(rb.position + movementDirection.normalized * movementSpeed * Time.fixedDeltaTime);
+            SetAnimatorSpeedParameter(movementDirection.normalized.magnitude);
             Flip();
             OnAfterMoved();
         }

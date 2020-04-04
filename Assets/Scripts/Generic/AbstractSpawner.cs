@@ -10,6 +10,8 @@ public abstract class AbstractSpawner : MonoBehaviour
     /// </summary>
     public float spawnRate = 1;
 
+    public bool spawningEnabled = true;
+
     protected float nextSpawnTime = 0;
 
     protected GameObject[] spawnPoints;
@@ -24,7 +26,7 @@ public abstract class AbstractSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsTimeToSpawn())
+        if (spawningEnabled && IsTimeToSpawn())
         {
             Transform spawnPoint = GetSpawnPoint();
             GameObject objectToSpawn = GetGameObjectToSpawn();

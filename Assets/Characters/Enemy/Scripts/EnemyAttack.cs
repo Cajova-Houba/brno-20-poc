@@ -1,28 +1,12 @@
-﻿using System;
+﻿using Assets.Scripts.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAttack : MonoBehaviour
+public class EnemyAttack : AbstractAttack
 {
-    public Transform attackPoint;
-
     public LayerMask playerLayer;
-
-    /// <summary>
-    /// Number of attacks per second.
-    /// </summary>
-    public float attackRate = 1f;
-
-    public int damage = 30;
-
-    /// <summary>
-    /// Attack range around attack point.
-    /// </summary>
-    public float meleeAttackRange = 0.5f;
-
-    float nextTimeToAttack = 0f;
-
 
     // Start is called before the first frame update
     void Start()
@@ -30,35 +14,21 @@ public class EnemyAttack : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override bool ShouldAttack()
     {
-        if (IsTimeToAttack())
-        {
-            Attack();
-            CalculateNewTimeToAttack();
-        }
+        // no other conditions
+        return true;
     }
 
-    private void CalculateNewTimeToAttack()
+    protected override void Attack()
     {
-        nextTimeToAttack = Time.time + 1f / attackRate;
-    }
-
-    private void Attack()
-    {
-        // play melee attack animation
-        // todo
-        Debug.Log("Enemy " + name + " is attacking");
-
         // detect hit enemies
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, meleeAttackRange, playerLayer);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayer);
 
         // damage enemies
         foreach (Collider2D playerCol in hitEnemies)
         {
             Debug.Log("Hiting " + playerCol.name);
-            PlayAttackAnimation();
             PlayerControl player = playerCol.GetComponent<PlayerControl>();
             if (player != null)
             {
@@ -69,28 +39,5 @@ public class EnemyAttack : MonoBehaviour
             break;
 
         }
-    }
-
-    private void PlayAttackAnimation()
-    {
-        // todo:
-    }
-
-    private bool IsTimeToAttack()
-    {
-        return Time.time >= nextTimeToAttack;
-    }
-
-    /// <summary>
-    /// Draw small circle around attack point - good for debugging.
-    /// </summary>
-    void OnDrawGizmosSelected()
-    {
-        if (attackPoint == null)
-        {
-            return;
-        }
-
-        Gizmos.DrawWireSphere(attackPoint.position, meleeAttackRange);
     }
 }

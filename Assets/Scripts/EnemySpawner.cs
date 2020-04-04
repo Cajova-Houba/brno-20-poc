@@ -33,7 +33,7 @@ public class EnemySpawner : AbstractSpawner
 
     protected override Transform GetSpawnPoint()
     {
-        return spawnPoints[0].transform;
+        return spawnPoints[random.Next(spawnPoints.Length)].transform;
     }
 
     protected override string GetSpawnPointTag()

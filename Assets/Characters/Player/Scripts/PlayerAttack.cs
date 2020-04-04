@@ -1,60 +1,33 @@
-﻿using System;
+﻿using Assets.Scripts.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : AbstractAttack
 {
-    public Transform attackPoint;
-
-    /// <summary>
-    /// Attack range around attack point.
-    /// </summary>
-    public float meleeAttackRange = 0.5f;
-
     /// <summary>
     /// Layers with enemies, used during melee attack.
     /// </summary>
     public LayerMask enemyLayers;
 
-    /// <summary>
-    /// Number of attacks per 1 second. 
-    /// </summary>
-    public float meleeAttackRate = 2f;
-    float nextAttackTime = 0f;
+    bool isAttacking = false;
 
-    /// <summary>
-    /// Damage this player does.
-    /// </summary>
-    public int damage = 25;
-
-    public Animator animator;
+    protected override bool ShouldAttack()
+    {
+        return isAttacking;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        bool isAttacking = Input.GetKeyDown(KeyCode.LeftControl);
-
-        if (isAttacking)
-        {
-            MeleeAttack();
-        }
+        isAttacking = Input.GetKeyDown(KeyCode.J);
     }
 
-    private void MeleeAttack()
+    protected override void Attack()
     {
-        if (!IsTimeToAttack())
-        {
-            return;
-        }
-
-        // play melee attack animation
-        // todo
-        Debug.Log("Attacking");
-        animator.SetTrigger("attacking");
-
         // detect hit enemies
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, meleeAttackRange, enemyLayers);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
         // damage enemies
         foreach (Collider2D enemy in hitEnemies)
@@ -70,30 +43,5 @@ public class PlayerAttack : MonoBehaviour
             break;
 
         }
-
-        CalculateNextAttackTime();
-    }
-
-    private void CalculateNextAttackTime()
-    {
-        nextAttackTime = Time.time + 1f / meleeAttackRate;
-    }
-
-    private bool IsTimeToAttack()
-    {
-        return Time.time >= nextAttackTime;
-    }
-
-    /// <summary>
-    /// Draw small circle around attack point - good for debugging.
-    /// </summary>
-    void OnDrawGizmosSelected()
-    {
-        if (attackPoint == null)
-        {
-            return;
-        }
-
-        Gizmos.DrawWireSphere(attackPoint.position, meleeAttackRange);
     }
 }

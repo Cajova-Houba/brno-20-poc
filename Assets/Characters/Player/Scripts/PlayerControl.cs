@@ -16,6 +16,8 @@ public class PlayerControl : AbstractCharacter
     /// </summary>
     public GameObject deadPlayer;
 
+    public GameObject restartDialog;
+
     protected override void Init()
     {
         
@@ -29,6 +31,9 @@ public class PlayerControl : AbstractCharacter
     {
         // spawn the dead player
         GameObject child = Instantiate(deadPlayer, transform.position, transform.rotation);
+
+        // display restart dialog
+        restartDialog.SetActive(true);
     }
 
     protected override bool ShouldMove()
