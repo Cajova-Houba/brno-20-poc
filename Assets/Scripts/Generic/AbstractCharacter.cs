@@ -92,6 +92,16 @@ public abstract class AbstractCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// Heals this character's energy by given amount up to the max energy.
+    /// </summary>
+    /// <param name="energy"></param>
+    public void HealEnergy(int energy)
+    {
+        currentEnergy = Math.Min(maxEnergy, currentEnergy + energy);
+        UpdateEnergyBar(currentEnergy);
+    }
+
+    /// <summary>
     /// Checks if the character has enough energy.
     /// </summary>
     /// <param name="requiredEnergy">Energy required by some action.</param>

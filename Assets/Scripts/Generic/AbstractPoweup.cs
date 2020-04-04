@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AbstractPoweup : MonoBehaviour
+public abstract class AbstractPowerup : MonoBehaviour
 {
     /// <summary>
     /// Check if trigger with player happened.

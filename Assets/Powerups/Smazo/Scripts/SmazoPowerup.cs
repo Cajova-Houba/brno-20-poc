@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SmazoPowerup : AbstractPoweup
+public class SmazoPowerup : AbstractPowerup
 {
     public int hpRegen = 20;
 

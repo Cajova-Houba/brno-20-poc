@@ -48,7 +48,7 @@ public abstract class AbstractSpawner : MonoBehaviour
     /// Called afther the object is instantiated.
     /// </summary>
     /// <param name="spawnedObject">Instantiated object.</param>
-    protected void PostSpawnAction(GameObject spawnedObject)
+    protected virtual void PostSpawnAction(GameObject spawnedObject)
     {
 
     }
@@ -58,7 +58,7 @@ public abstract class AbstractSpawner : MonoBehaviour
         return Math.Abs(spawnRate - 0) < 0.001;
     }
 
-    protected bool IsTimeToSpawn()
+    protected virtual bool IsTimeToSpawn()
     {
         // spawnRate == 0 => don't spawn anything
         return !IsSpawnRateZero() && Time.time > nextSpawnTime;
