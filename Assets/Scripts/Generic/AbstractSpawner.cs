@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,9 +13,20 @@ public abstract class AbstractSpawner : MonoBehaviour
 
     public bool spawningEnabled = true;
 
+    /// <summary>
+    /// If turned of, spawnRate value will be used.
+    /// If turned on, value from SettingsHolder will be used.
+    /// </summary>
+    public bool useSettings = true;
+
     protected float nextSpawnTime = 0;
 
     protected GameObject[] spawnPoints;
+
+    public float GetUsedSpawnRate()
+    {
+        return useSettings ? GetSettingsSpawnRate() : spawnRate;
+    }
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -66,8 +78,16 @@ public abstract class AbstractSpawner : MonoBehaviour
 
     protected void CalculateSpawnTime()
     {
-        nextSpawnTime = Time.time + 1f / spawnRate;
+        float rate = GetUsedSpawnRate();
+
+        nextSpawnTime = Time.time + 1f / rate;
     }
+
+    /// <summary>
+    /// Get value from SettingsHolder that should be used by this spawner.
+    /// </summary>
+    /// <returns></returns>
+    protected abstract float GetSettingsSpawnRate();
 
     /// <summary>
     /// Implementation specific initialization. Called after spawn points

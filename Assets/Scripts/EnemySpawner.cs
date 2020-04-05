@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,5 +40,10 @@ public class EnemySpawner : AbstractSpawner
     protected override string GetSpawnPointTag()
     {
         return "SpawnPoint";
+    }
+
+    protected override float GetSettingsSpawnRate()
+    {
+        return SettingsHolder.enemySpawnRate;
     }
 }

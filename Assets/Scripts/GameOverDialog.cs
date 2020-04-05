@@ -15,6 +15,11 @@ public class GameOverDialog : MonoBehaviour
         SceneManager.LoadScene("Level1");
     }
 
+    public void DisplayMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
     public void QuitGame()
     {
         Application.Quit();

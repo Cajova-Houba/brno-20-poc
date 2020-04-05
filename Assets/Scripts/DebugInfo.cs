@@ -35,14 +35,14 @@ public class DebugInfo : MonoBehaviour
 
     private void PrintTramSpawnRate()
     {
-        float tramSpawnRateInverse = tramSpawner.spawnRate;
+        float tramSpawnRateInverse = tramSpawner.GetUsedSpawnRate();
         string isEnabledText = tramSpawner.spawningEnabled ? " (enabled)" : " (disabled)";
         tramSpawnRateText.text = "Salina spawn rate: " + tramSpawnRateInverse + "/s"+isEnabledText;
     }
 
     private void PrintEnemySpawnRate()
     {
-        float enemySpawnRateInverse = enemySpawner.spawnRate;
+        float enemySpawnRateInverse = enemySpawner.GetUsedSpawnRate();
         string isEnabledText = enemySpawner.spawningEnabled ? " (enabled)" : " (disabled)";
         enemySpawnRateText.text = "Enemy spawn rate: " + enemySpawnRateInverse + "/s"+isEnabledText;
     }

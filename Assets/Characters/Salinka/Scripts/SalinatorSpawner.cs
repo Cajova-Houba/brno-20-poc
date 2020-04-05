@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,5 +28,10 @@ public class SalinatorSpawner : AbstractSpawner
     protected override string GetSpawnPointTag()
     {
         return "SalinaSpawnPoint";
+    }
+
+    protected override float GetSettingsSpawnRate()
+    {
+        return SettingsHolder.tramSpawnRate;
     }
 }
