@@ -29,7 +29,7 @@ public class EnemyAttack : AbstractAttack
         foreach (Collider2D playerCol in hitEnemies)
         {
             Debug.Log("Hiting " + playerCol.name);
-            PlayerControl player = playerCol.GetComponent<PlayerControl>();
+            PlayerControl player = playerCol.GetComponentInParent<PlayerControl>();
             if (player != null)
             {
                 player.TakeDamage(damage);

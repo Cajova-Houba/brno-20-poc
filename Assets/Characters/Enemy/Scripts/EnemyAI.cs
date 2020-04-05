@@ -16,7 +16,8 @@ public class EnemyAI : AbstractCharacter
     /// </summary>
     public float movementRange = 5f;
 
-    public GameObject powerup;
+    public GameObject powerup1;
+    public GameObject powerup2;
 
     BoxCollider2D boxCollider;
 
@@ -54,7 +55,7 @@ public class EnemyAI : AbstractCharacter
     {
         if (random.Next(2) != 0 )
         {
-            Instantiate(powerup, transform.position, transform.rotation);
+            Instantiate(random.Next(2) == 0 ? powerup1 : powerup2, transform.position, transform.rotation);
         }
     }
 

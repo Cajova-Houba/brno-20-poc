@@ -33,7 +33,7 @@ public class PlayerAttack : AbstractAttack
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("Hit " + enemy.name);
-            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+            EnemyAI enemyAI = enemy.GetComponentInParent<EnemyAI>();
             if (enemyAI != null)
             {
                 enemyAI.TakeDamage(damage);

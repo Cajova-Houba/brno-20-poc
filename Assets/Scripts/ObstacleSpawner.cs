@@ -34,25 +34,23 @@ namespace Assets.Scripts
         /// </summary>
         public string obstacleSpawnpointTag;
 
-
-        private bool spawned = false;
-
         /// <summary>
         /// All spawn points that can be used for obstacles.
         /// </summary>
         protected GameObject[] spawnPoints;
 
-        /// <summary>
-        /// A subset of spawnPoints that are already occupied.
-        /// </summary>
-        private HashSet<Transform> occupiedPositions;
+        protected List<Transform> availableSpawnPoints;
 
         private System.Random random;
 
         void Start()
         {
             spawnPoints = GameObject.FindGameObjectsWithTag(obstacleSpawnpointTag);
-            occupiedPositions = new HashSet<Transform>();
+            availableSpawnPoints = new List<Transform>();
+            foreach(GameObject sp in spawnPoints)
+            {
+                availableSpawnPoints.Add(sp.transform);
+            }
             random = new System.Random();
 
             SpawnTrashCans();
@@ -90,7 +88,10 @@ namespace Assets.Scripts
 
         private Transform PickRandomSpawnPoint()
         {
-            return spawnPoints[random.Next(spawnPoints.Length)].transform;
+            int index = random.Next(availableSpawnPoints.Count);
+            Transform t = availableSpawnPoints[index];
+            availableSpawnPoints.RemoveAt(index);
+            return t;
         }
     }
 }
