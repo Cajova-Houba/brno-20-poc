@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,11 +13,18 @@ public class SalinatorAI : MonoBehaviour
     public float minX = -50;
     public float maxX = 60;
 
+    /// <summary>
+    /// Stiff body used to correctly set the z-axis position.
+    /// </summary>
+    public GameObject stiffBody;
+
     float direction;
 
     // Start is called before the first frame update
     void Start()
     {
+        SetZPosition();
+
         // flip to player direction
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -27,6 +36,14 @@ public class SalinatorAI : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void SetZPosition()
+    {
+        Vector3 pos = stiffBody.transform.position;
+        Vector3 gameObjPos = gameObject.transform.position;
+        gameObjPos.z = pos.y - SettingsHolder.zRange;
+        gameObject.transform.position = gameObjPos;
     }
 
     // Update is called once per frame

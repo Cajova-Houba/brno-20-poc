@@ -48,6 +48,13 @@ public abstract class AbstractCharacter : MonoBehaviour
 
     public HealthBar energyBar;
 
+    public GameObject sprite;
+
+    /// <summary>
+    /// Stiff body used to calculate correct z-axis position.
+    /// </summary>
+    public GameObject stiffBody;
+
     /// <summary>
     /// Direction of the character's movement. Usually set in Update() method.
     /// </summary>
@@ -152,6 +159,11 @@ public abstract class AbstractCharacter : MonoBehaviour
         {
             facingRight = !facingRight;
             rb.transform.Rotate(new Vector3(0, 180, 0));
+
+            //set sprite position to z = -z to 'reverse' the flip rotation
+            Vector3 p = sprite.transform.position;
+            p.z = -p.z;
+            sprite.transform.position = p;
         }
     }
 
@@ -210,6 +222,8 @@ public abstract class AbstractCharacter : MonoBehaviour
         if (ShouldMove())
         {
             rb.MovePosition(rb.position + movementDirection.normalized * movementSpeed * Time.fixedDeltaTime);
+            UpdateSpriteZAxis();
+
             SetAnimatorSpeedParameter(movementDirection.normalized.magnitude);
             Flip();
             OnAfterMoved();
@@ -219,6 +233,23 @@ public abstract class AbstractCharacter : MonoBehaviour
             // don't move if we're near the player
             rb.MovePosition(rb.position);
         }
+    }
+
+    /// <summary>
+    /// Sets the position.z value of the sprite so that it overlaps correctly
+    /// with sprites of other objects.
+    /// 
+    /// The z-axis position is calculated relative to the position of 
+    /// character's stiff body, not game object.
+    /// 
+    /// Changing the z position of sprite does not affect physics or collisions so it should be ok.
+    /// </summary>
+    private void UpdateSpriteZAxis()
+    {
+        Vector3 pos = stiffBody.transform.position;
+        Vector3 spritePos = sprite.transform.position;
+        spritePos.z = pos.y - 6.2f;
+        sprite.transform.position = spritePos;
     }
 
     private void Die()

@@ -11,7 +11,11 @@ namespace Assets.Scripts
     /// </summary>
     public class SettingsHolder
     {
+        public static string currentVersion = "v5";
+
         public static float enemySpawnRate = 0.1f;
         public static float tramSpawnRate = 0.05f;
+
+        public static float zRange = 6.2f;
     }
 }
