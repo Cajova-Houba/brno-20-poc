@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,7 +54,7 @@ public class EnemyAI : AbstractCharacter
 
     private void SpawnPowerup()
     {
-        if (random.Next(2) != 0 )
+        if (random.Next() <= SettingsHolder.powerupDropChance )
         {
             Instantiate(random.Next(2) == 0 ? powerup1 : powerup2, transform.position, transform.rotation);
         }

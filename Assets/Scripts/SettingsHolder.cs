@@ -16,6 +16,11 @@ namespace Assets.Scripts
         public static float enemySpawnRate = 0.1f;
         public static float tramSpawnRate = 0.05f;
 
+        /// <summary>
+        /// Number between 0 and 100.
+        /// </summary>
+        public static float powerupDropChance = 0.65f;
+
         public static float zRange = 6.2f;
     }
 }
