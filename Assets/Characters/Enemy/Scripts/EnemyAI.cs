@@ -22,8 +22,10 @@ public class EnemyAI : AbstractCharacter
 
     public float playerFollowMovementSpeed = 2.5f;
 
-    public GameObject powerup1;
-    public GameObject powerup2;
+    /// <summary>
+    /// Powerups dropped by this enemy when he dies.
+    /// </summary>
+    public GameObject[] powerups;
 
     BoxCollider2D boxCollider;
 
@@ -44,6 +46,11 @@ public class EnemyAI : AbstractCharacter
         return player != null && Math.Abs((player.position - gameObject.transform.position).magnitude) <= playerDetectionRange;
     }
 
+    protected bool IsNextToPlayer()
+    {
+        return player != null && Math.Abs((player.position - gameObject.transform.position).magnitude) <= 1.5f;
+    }
+
     protected override void OnDying()
     {
         SpawnPowerup();
@@ -51,7 +58,9 @@ public class EnemyAI : AbstractCharacter
 
     protected override bool ShouldMove()
     {
-        return true;
+        // wander around if the player is dead,
+        // or if he isn't dead and you're not next to him
+        return player == null || !IsNextToPlayer();
     }
 
     protected override void OnAfterMoved()
@@ -141,9 +150,10 @@ public class EnemyAI : AbstractCharacter
 
     private void SpawnPowerup()
     {
-        if (random.Next() <= SettingsHolder.powerupDropChance )
+        if (random.NextDouble() <= SettingsHolder.powerupDropChance )
         {
-            Instantiate(random.Next(2) == 0 ? powerup1 : powerup2, transform.position, transform.rotation);
+            Vector3 pos = new Vector3(transform.position.x, transform.position.y, sprite.transform.position.z);
+            Instantiate(powerups[random.Next(powerups.Length)], pos, Quaternion.identity);
         }
     }
 
@@ -166,22 +176,6 @@ public class EnemyAI : AbstractCharacter
         {
             movementDirection = player.position - transform.position;
         }
-        //Debug.Log(Time.time);
-        //Debug.Log("Next:" +nextMovementTargetUpdateTime);
-        //if (Time.time >= nextMovementTargetUpdateTime)
-        //{
-        //    Debug.Log("Move");
-        //    player = playerObj.transform;
-        //    CalculateNewDirection();
-        //    //CalculateTimeToUpdateMovementTarget();
-        //}
-
-        //if (playerObj != null)
-        //{
-        //    // keep moving in player's direction
-        //    player = playerObj.transform;
-        //    movementDirection = player.position - transform.position;
-        //}
     }
 
     private void CalculateTimeToUpdateMovementTarget()
@@ -211,6 +205,7 @@ public class EnemyAI : AbstractCharacter
         // draw all rays in movement angle
         foreach(Vector3 ray in rayPoints)
         {
+            // todo: linecast is already done once, use the result and do not do it again here
             Vector3 endPoint = stiffBody.transform.position + ray;
             // check rays for possible collisions 
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(ray, 0.3f);
@@ -219,7 +214,6 @@ public class EnemyAI : AbstractCharacter
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(stiffBody.transform.position, rayHit.point);
-                Debug.Log("Ray hit: " + rayHit.point+"; "+rayHit.collider.name);
             }
 
             if (rayHits.Length == 0)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SmazoPowerup : AbstractPowerup
 {
-    public int hpRegen = 20;
+    public int hpRegen = 75;
 
     protected override void UsePowerup(PlayerControl player)
     {

@@ -4,14 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Iterates through its spawn points and picks the active ones. Then randomly chooses one 
+/// of the active spawnpoints and spawn the enemy.
+/// </summary>
 public class EnemySpawner : AbstractSpawner
 {
-    public GameObject kozaak;
-    public GameObject husaak;
-    public GameObject prasaak;
-
-    public int enemyTypeCount = 3;
-
     System.Random random;
 
     protected override void Init()
@@ -19,22 +17,31 @@ public class EnemySpawner : AbstractSpawner
         random = new System.Random();
     }
 
-    protected override GameObject GetGameObjectToSpawn()
+    protected override GameObject GetGameObjectToSpawn(GameObject spawnPoint)
     {
-        int r = random.Next(enemyTypeCount);
-        switch (r)
-        {
-            case 0: return husaak;
-            case 1: return kozaak;
-            case 2: return prasaak;
-            default: return husaak;
-
-        }
+        EnemySpawnPoint esp = spawnPoint.GetComponent<EnemySpawnPoint>();
+        return esp.GetEnemyToSpawn();
     }
 
-    protected override Transform GetSpawnPoint()
+    protected override GameObject GetSpawnPoint()
     {
-        return spawnPoints[random.Next(spawnPoints.Length)].transform;
+        List<GameObject> enemySpawnPoints = new List<GameObject>();
+        foreach(GameObject sp in spawnPoints)
+        {
+            EnemySpawnPoint esp = sp.GetComponent<EnemySpawnPoint>();
+            if (esp != null && esp.IsPlayerNear())
+            {
+                enemySpawnPoints.Add(sp);
+            }
+        }
+
+        if (enemySpawnPoints.Count == 0)
+        {
+            return null;
+        } else
+        {
+            return enemySpawnPoints[random.Next(enemySpawnPoints.Count)];
+        }
     }
 
     protected override string GetSpawnPointTag()

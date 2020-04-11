@@ -15,14 +15,14 @@ public class SalinatorSpawner : AbstractSpawner
         random = new System.Random();
     }
 
-    protected override GameObject GetGameObjectToSpawn()
+    protected override GameObject GetGameObjectToSpawn(GameObject spawnPoint)
     {
         return salina;
     }
 
-    protected override Transform GetSpawnPoint()
+    protected override GameObject GetSpawnPoint()
     {
-        return spawnPoints[random.Next(spawnPoints.Length)].transform;
+        return spawnPoints[random.Next(spawnPoints.Length)];
     }
 
     protected override string GetSpawnPointTag()

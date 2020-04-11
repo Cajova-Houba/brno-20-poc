@@ -12,6 +12,13 @@ public class EnemySpawnPoint : MonoBehaviour
     public LayerMask playerLayer;
 
     /// <summary>
+    /// Enemies this spawn point can spawn.
+    /// </summary>
+    public GameObject[] spawnableEnemies;
+
+    private System.Random random;
+
+    /// <summary>
     /// Checks if the player is in range of this spawn point.
     /// </summary>
     /// <returns></returns>
@@ -21,10 +28,15 @@ public class EnemySpawnPoint : MonoBehaviour
         return playerColisions.Length > 0;
     }
 
+    public GameObject GetEnemyToSpawn()
+    {
+        return spawnableEnemies[random.Next(spawnableEnemies.Length)];
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        random = new System.Random();
     }
 
     // Update is called once per frame

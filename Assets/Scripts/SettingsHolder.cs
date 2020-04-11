@@ -13,13 +13,13 @@ namespace Assets.Scripts
     {
         public static string currentVersion = "v5";
 
-        public static float enemySpawnRate = 0.1f;
+        public static float enemySpawnRate = 0.3f;
         public static float tramSpawnRate = 0.05f;
 
         /// <summary>
-        /// Number between 0 and 100.
+        /// Number between 0 and 1.
         /// </summary>
-        public static float powerupDropChance = 0.65f;
+        public static float powerupDropChance = 0.9f;
 
         public static float zRange = 6.2f;
     }

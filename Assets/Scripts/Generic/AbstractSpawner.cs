@@ -40,11 +40,14 @@ public abstract class AbstractSpawner : MonoBehaviour
     {
         if (spawningEnabled && IsTimeToSpawn())
         {
-            Transform spawnPoint = GetSpawnPoint();
-            GameObject objectToSpawn = GetGameObjectToSpawn();
-            Debug.Log("Spawning: " + spawnPoint.position + " ; " + spawnPoint.rotation);
-            GameObject newObject = Instantiate(objectToSpawn, spawnPoint.position, spawnPoint.rotation);
-            PostSpawnAction(newObject);
+            GameObject spawnPoint = GetSpawnPoint();
+            if (spawnPoint != null)
+            {
+                GameObject objectToSpawn = GetGameObjectToSpawn(spawnPoint);
+                Debug.Log("Spawning: " + spawnPoint.transform.position + " ; " + spawnPoint.transform.rotation);
+                GameObject newObject = Instantiate(objectToSpawn, spawnPoint.transform.position, spawnPoint.transform.rotation);
+                PostSpawnAction(newObject);
+            }
 
             CalculateSpawnTime();
         }
@@ -95,9 +98,9 @@ public abstract class AbstractSpawner : MonoBehaviour
     /// </summary>
     protected abstract void Init();
 
-    protected abstract GameObject GetGameObjectToSpawn();
+    protected abstract GameObject GetGameObjectToSpawn(GameObject spawnPoint);
 
-    protected abstract Transform GetSpawnPoint();
+    protected abstract GameObject GetSpawnPoint();
 
     protected abstract string GetSpawnPointTag();
 }
