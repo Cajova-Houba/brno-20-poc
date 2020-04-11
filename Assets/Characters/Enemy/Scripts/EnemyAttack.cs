@@ -8,6 +8,11 @@ public class EnemyAttack : AbstractAttack
 {
     public LayerMask playerLayer;
 
+    /// <summary>
+    /// Reference to AI controlling this object.
+    /// </summary>
+    public EnemyAI ai;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,8 +21,8 @@ public class EnemyAttack : AbstractAttack
 
     protected override bool ShouldAttack()
     {
-        // no other conditions
-        return true;
+        // attack only if the player is near
+        return ai.IsPlayerNear();
     }
 
     protected override void Attack()
