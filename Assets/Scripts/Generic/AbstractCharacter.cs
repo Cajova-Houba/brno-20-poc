@@ -150,6 +150,16 @@ public abstract class AbstractCharacter : MonoBehaviour
     protected abstract void Init();
 
     /// <summary>
+    /// Movement speed to be used during movement. Returns movementSpeed by default
+    /// but can be overriden to set different speed when e.g. following player.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual float GetMovementSpeed()
+    {
+        return movementSpeed;
+    }
+
+    /// <summary>
     /// Flips character object so that it's facing the same direction as his movement.
     /// </summary>
     protected void Flip()
@@ -221,7 +231,8 @@ public abstract class AbstractCharacter : MonoBehaviour
     {
         if (ShouldMove())
         {
-            rb.MovePosition(rb.position + movementDirection.normalized * movementSpeed * Time.fixedDeltaTime);
+            //rb.MovePosition(rb.position + (-(Vector2)stiffBody.transform.position + movementDirection).normalized * movementSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + movementDirection.normalized * GetMovementSpeed() * Time.fixedDeltaTime);
             UpdateSpriteZAxis();
 
             SetAnimatorSpeedParameter(movementDirection.normalized.magnitude);
@@ -234,6 +245,7 @@ public abstract class AbstractCharacter : MonoBehaviour
             rb.MovePosition(rb.position);
         }
     }
+    
 
     /// <summary>
     /// Sets the position.z value of the sprite so that it overlaps correctly

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class EnemyAI : AbstractCharacter
 {
+    public const int PATH_RAY_COUNT = 10;
 
     /// <summary>
     /// How many times per 1 second should enemy update his target.
@@ -19,6 +20,8 @@ public class EnemyAI : AbstractCharacter
     /// </summary>
     public float playerDetectionRange = 5f;
 
+    public float playerFollowMovementSpeed = 2.5f;
+
     public GameObject powerup1;
     public GameObject powerup2;
 
@@ -27,6 +30,8 @@ public class EnemyAI : AbstractCharacter
     Transform player;
 
     float nextMovementTargetUpdateTime;
+
+    Vector3[] rayPoints = new Vector3[PATH_RAY_COUNT];
 
     System.Random random;
 
@@ -58,6 +63,17 @@ public class EnemyAI : AbstractCharacter
         }
     }
 
+    protected override float GetMovementSpeed()
+    {
+        if (IsPlayerNear())
+        {
+            return playerFollowMovementSpeed;
+        } else
+        {
+            return base.GetMovementSpeed();
+        }
+    }
+
     private bool IsTimeToUpdateTarget()
     {
         return Time.time >= nextMovementTargetUpdateTime;
@@ -68,44 +84,59 @@ public class EnemyAI : AbstractCharacter
         boxCollider = GetComponent<BoxCollider2D>();
         nextMovementTargetUpdateTime = 0;
         random = new System.Random();
+
+        // since enemies are spawned at the top, set
+        // initial movement direction to bottom
         movementDirection.x = 0;
-        movementDirection.y = 1;
+        movementDirection.y = -1;
+    }
+
+    private void CalculateRayPoints()
+    { 
+        float baseAngle = (float)Math.Atan2(movementDirection.y, movementDirection.x) * 180 / (float)Math.PI;
+        int angleStep = movementAngleRange / PATH_RAY_COUNT;
+        float halfRange = movementAngleRange / 2;
+        float magnitude = 1.5f;
+        for (int i = 0; i < PATH_RAY_COUNT; i++)
+        {
+            float newAngle = (baseAngle + halfRange - i * angleStep);
+            float newX = (float)(magnitude * Math.Cos(newAngle * Math.PI / 180)),
+            newY = (float)(magnitude * Math.Sin(newAngle * Math.PI / 180));
+
+            rayPoints[i] = new Vector3(newX, newY, 0);
+        }
     }
 
     private void CalculateNewDirection()
     {
-        float magnitude = movementDirection.magnitude;
-        float currentAngle = 0;
+        // pick ray which does not collide with anything
+        List<Vector3> availablePaths = new List<Vector3>();
+        foreach(Vector3 pathRay in rayPoints)
+        {
+            bool isColision = false;
+            RaycastHit2D[] rayHits = Physics2D.LinecastAll(stiffBody.transform.position, stiffBody.transform.position + pathRay, 1 << 13);
+            isColision = rayHits.Length > 0;
 
-        if (magnitude - 0 > 0.001)
-        {
-            // calculate current angle only if magnitude != 0
-            currentAngle = (float)Math.Atan(movementDirection.y / movementDirection.x);
-        } else
-        {
-            // set some magnitude if it's null
-            magnitude = 1;
+            if (!isColision)
+            {
+                availablePaths.Add(pathRay);
+            }
         }
 
-        // convert it to radians
-        currentAngle = (float)Math.PI * currentAngle / 180f;
+        //Debug.Log("Available paths: " + availablePaths.Count);
+        if (availablePaths.Count == 0)
+        {
+            // no available paths, stay still
+            movementDirection.x = 0;
+            movementDirection.y = 0;
+        } else
+        {
+            int randomPathIndex = random.Next(availablePaths.Count);
+            movementDirection.x = availablePaths[randomPathIndex].x;
+            movementDirection.y = availablePaths[randomPathIndex].y;
+        }
 
-        // new angle (in both directions) from given range
-        float newAngle = random.Next(movementAngleRange) * (random.Next(2) == 0 ? 1 : -1);
-        newAngle = (float)Math.PI * newAngle / 180f;
-
-        // add the current one
-        newAngle += currentAngle;
-
-        // transform it back to vector
-        float newX = (float)(magnitude * Math.Cos(newAngle)), 
-            newY = (float)(magnitude * Math.Sin(newAngle));
-
-        movementDirection.x = newX;
-        movementDirection.y = newY;
-        Debug.Log("Previous angle: " + currentAngle*180f/Math.PI);
-        Debug.Log("New angle: " + newAngle * 180f / Math.PI);
-        Debug.Log("New direction: " + movementDirection);
+        //Debug.Log("New direction: " + movementDirection);
     }
 
     private void SpawnPowerup()
@@ -120,6 +151,7 @@ public class EnemyAI : AbstractCharacter
     void Update()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        CalculateRayPoints();
 
         if (playerObj == null)
         {
@@ -173,7 +205,33 @@ public class EnemyAI : AbstractCharacter
     /// </summary>
     void OnDrawGizmosSelected()
     {
+        Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, playerDetectionRange);
-        Gizmos.DrawLine(transform.position, transform.position+(Vector3)movementDirection);
+
+        // draw all rays in movement angle
+        foreach(Vector3 ray in rayPoints)
+        {
+            Vector3 endPoint = stiffBody.transform.position + ray;
+            // check rays for possible collisions 
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(ray, 0.3f);
+            RaycastHit2D[] rayHits = Physics2D.LinecastAll(stiffBody.transform.position, endPoint, 1 << 13);
+            foreach(RaycastHit2D rayHit in rayHits)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(stiffBody.transform.position, rayHit.point);
+                Debug.Log("Ray hit: " + rayHit.point+"; "+rayHit.collider.name);
+            }
+
+            if (rayHits.Length == 0)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(stiffBody.transform.position, endPoint);
+            }
+            Gizmos.DrawWireSphere(endPoint, 0.3f);
+        }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(stiffBody.transform.position, stiffBody.transform.position + (Vector3)movementDirection);
+
     }
 }
