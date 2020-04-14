@@ -21,6 +21,12 @@ public class PlayerControl : AbstractCharacter
 
     bool isAttacking = false;
 
+    protected override bool IsStunnable()
+    {
+        // player is not stunnable rn
+        return false;
+    }
+
     protected override void Init()
     {
         

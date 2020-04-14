@@ -15,6 +15,9 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// </summary>
     public const string IS_MOVING_ANIM_NAME = "isMoving";
 
+    public const string HIT_1_ANIM_NAME = "hit1";
+    public const string HIT_2_ANIM_NAME = "hit2";
+
     /// <summary>
     /// Animator used for walking/idle animations.
     /// 
@@ -62,13 +65,27 @@ public abstract class AbstractCharacter : MonoBehaviour
     public AbstractAttack[] attacks;
 
     /// <summary>
+    /// How long should the character be stunned when hit.
+    /// </summary>
+    public float stunDuration;
+
+    /// <summary>
     /// Direction of the character's movement. Usually set in Update() method.
     /// </summary>
     protected Vector2 movementDirection;
 
+    protected bool stunned = false;
+
     protected int currentHP;
 
     protected int currentEnergy;
+
+    /// <summary>
+    /// Flag used to govern stun types
+    /// true = 1st stun 
+    /// false = 2nd stun
+    /// </summary>
+    private bool stunType = true;
 
     /// <summary>
     /// Method that can be used by other scripts to damage this character.
@@ -83,6 +100,52 @@ public abstract class AbstractCharacter : MonoBehaviour
         if (currentHP <= 0)
         {
             Die();
+        }
+        
+        if (IsStunnable() && !IsStunned())
+        {
+            // stun the character only if it's stunnable and is not stunned already
+            StartCoroutine(Stun());
+        }
+    }
+
+    /// <summary>
+    /// Returns true if this character is stunned.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsStunned()
+    {
+        return stunned;
+    }
+
+    /// <summary>
+    /// Returns true if this character can be stunned by attack.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool IsStunnable()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Coroutine which sets the stunned flag, yields for the stun duration and the re-sets the stunned flag.
+    /// Should be called when a stunnable character is hit.
+    /// </summary>
+    private IEnumerator Stun()
+    {
+        stunned = true;
+        PlayStunnedAnimation();
+        yield return new WaitForSeconds(stunDuration);
+        stunned = false;
+    }
+
+    private void PlayStunnedAnimation()
+    {
+        string triggerName = stunType ? HIT_1_ANIM_NAME : HIT_2_ANIM_NAME;
+        stunType = !stunType;
+        if (animator != null)
+        {
+            animator.SetTrigger(triggerName);
         }
     }
 
