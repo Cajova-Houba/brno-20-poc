@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Generic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,9 +34,26 @@ public class EnemyAI : AbstractCharacter
 
     float nextMovementTargetUpdateTime;
 
+    /// <summary>
+    /// Array of rays used to avoid obastacles.
+    /// </summary>
     Vector3[] rayPoints = new Vector3[PATH_RAY_COUNT];
 
+    /// <summary>
+    /// Flags for rayPoints array, pointing to ray paths where no collisions were detected. 
+    /// false = collision detected.
+    /// </summary>
+    bool[] availableRayPaths = new bool[PATH_RAY_COUNT];
+
     System.Random random;
+
+    /// <summary>
+    /// Attack to be used. Also serves as an 'isAttacking' flag and movement speed is 
+    /// set to 0 when this object is set.
+    /// </summary>
+    AbstractAttack nextAttackToUse;
+
+    bool attacking = false;
 
     /// <summary>
     /// Checks if the player is near this enemy. If there's no player, returns false.
@@ -74,19 +92,23 @@ public class EnemyAI : AbstractCharacter
 
     protected override float GetMovementSpeed()
     {
-        if (IsPlayerNear())
+        if (IsAttacking())
         {
+            // enemies do not move when they are attacking
+            return 0;
+        }
+        else if (IsPlayerNear())
+        {
+            // not attacking but following player
             return playerFollowMovementSpeed;
-        } else
+        }
+        else
         {
+            // wandering
             return base.GetMovementSpeed();
         }
     }
 
-    private bool IsTimeToUpdateTarget()
-    {
-        return Time.time >= nextMovementTargetUpdateTime;
-    }
 
     protected override void Init()
     {
@@ -100,6 +122,12 @@ public class EnemyAI : AbstractCharacter
         movementDirection.y = -1;
     }
 
+    /// <summary>
+    /// Calculates rays to be used to detect collisions in front of this enemy and checks if there's
+    /// a collision for each ray.
+    /// 
+    /// Results are stored in rayPoints and availableRayPaths array.
+    /// </summary>
     private void CalculateRayPoints()
     { 
         float baseAngle = (float)Math.Atan2(movementDirection.y, movementDirection.x) * 180 / (float)Math.PI;
@@ -113,6 +141,9 @@ public class EnemyAI : AbstractCharacter
             newY = (float)(magnitude * Math.Sin(newAngle * Math.PI / 180));
 
             rayPoints[i] = new Vector3(newX, newY, 0);
+
+            // calculate collision
+            availableRayPaths[i] = !Physics2D.Linecast(stiffBody.transform.position, stiffBody.transform.position + rayPoints[i], 1 << 13);   
         }
     }
 
@@ -120,15 +151,11 @@ public class EnemyAI : AbstractCharacter
     {
         // pick ray which does not collide with anything
         List<Vector3> availablePaths = new List<Vector3>();
-        foreach(Vector3 pathRay in rayPoints)
+        for(int i = 0; i < PATH_RAY_COUNT; i++)
         {
-            bool isColision = false;
-            RaycastHit2D[] rayHits = Physics2D.LinecastAll(stiffBody.transform.position, stiffBody.transform.position + pathRay, 1 << 13);
-            isColision = rayHits.Length > 0;
-
-            if (!isColision)
+            if (availableRayPaths[i])
             {
-                availablePaths.Add(pathRay);
+                availablePaths.Add(rayPoints[i]);
             }
         }
 
@@ -148,11 +175,26 @@ public class EnemyAI : AbstractCharacter
         //Debug.Log("New direction: " + movementDirection);
     }
 
+    /// <summary>
+    /// Returns true if the nextAttack object is set.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsAttacking()
+    {
+        return attacking;
+    }
+
+    private bool IsTimeToUpdateTarget()
+    {
+        return Time.time >= nextMovementTargetUpdateTime;
+    }
+
     private void SpawnPowerup()
     {
         if (random.NextDouble() <= SettingsHolder.powerupDropChance )
         {
-            Vector3 pos = new Vector3(transform.position.x, transform.position.y, sprite.transform.position.z);
+            // todo: create function y -> z somewhere and use it
+            Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.y - 6.2f);
             Instantiate(powerups[random.Next(powerups.Length)], pos, Quaternion.identity);
         }
     }
@@ -171,10 +213,60 @@ public class EnemyAI : AbstractCharacter
             player = playerObj.transform;
         }
 
-        // if the player is near, follow him
+        // if the player is near, follow him and try to attack
         if (IsPlayerNear())
         {
             movementDirection = player.position - transform.position;
+            if (!attacking)
+            {
+                if (nextAttackToUse == null)
+                {
+                    // player is near, I'm not attacking and no attack is selected -> select one
+                    Debug.Log(name + " is selecting attack.");
+                    PickAttackToUse();
+                } else
+                {
+                    // player is near, I'm not attacking and attack is selected -> use it
+                    Debug.Log(name + " is attacking.");
+                    StartCoroutine(UseAndResetAttack());
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Coroutine which uses the attack, waits for the attack animation to finish and 
+    /// then re-sets the nextAttack object.
+    /// This way, enemy starts moving again only after the attack is finished.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator UseAndResetAttack()
+    {
+        attacking = true;
+        nextAttackToUse.UseAttack();
+        yield return new WaitForSeconds(nextAttackToUse.animationSecDuration);
+        Debug.Log("Attacking coroutine finished.");
+        nextAttackToUse = null;
+        attacking = false;
+    }
+
+    /// <summary>
+    /// Method goes through all of character's attacks and picks the first usable attack.
+    /// </summary>
+    private void PickAttackToUse()
+    {
+        if (attacks == null)
+        {
+            return;
+        }
+
+        foreach(AbstractAttack attack in attacks)
+        {
+            if (attack.CanUseAttack() && attack.IsInAttackingRange())
+            {
+                nextAttackToUse = attack;
+                break;
+            }
         }
     }
 
@@ -205,23 +297,19 @@ public class EnemyAI : AbstractCharacter
         // draw all rays in movement angle
         foreach(Vector3 ray in rayPoints)
         {
-            // todo: linecast is already done once, use the result and do not do it again here
             Vector3 endPoint = stiffBody.transform.position + ray;
             // check rays for possible collisions 
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(ray, 0.3f);
-            RaycastHit2D[] rayHits = Physics2D.LinecastAll(stiffBody.transform.position, endPoint, 1 << 13);
-            foreach(RaycastHit2D rayHit in rayHits)
+            for(int i = 0; i < PATH_RAY_COUNT; i++)
             {
-                Gizmos.color = Color.red;
-                Gizmos.DrawLine(stiffBody.transform.position, rayHit.point);
-            }
-
-            if (rayHits.Length == 0)
-            {
-                Gizmos.color = Color.white;
+                if (availableRayPaths[i])
+                {
+                    Gizmos.color = Color.white;
+                } else
+                {
+                    Gizmos.color = Color.red;
+                }
                 Gizmos.DrawLine(stiffBody.transform.position, endPoint);
             }
-            Gizmos.DrawWireSphere(endPoint, 0.3f);
         }
 
         Gizmos.color = Color.green;

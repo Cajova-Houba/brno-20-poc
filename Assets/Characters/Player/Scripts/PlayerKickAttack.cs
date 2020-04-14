@@ -22,6 +22,11 @@ namespace Assets.Characters.Player.Scripts
 
         bool isAttacking = false;
 
+        public override bool IsInAttackingRange()
+        {
+            return true;
+        }
+
         protected override bool ShouldAttack()
         {
             return isAttacking && playerControl.HasEnoughEnergy(requiredEnergy);

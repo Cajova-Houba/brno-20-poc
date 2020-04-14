@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,6 +57,11 @@ public abstract class AbstractCharacter : MonoBehaviour
     public GameObject stiffBody;
 
     /// <summary>
+    /// Attacks available to this character.
+    /// </summary>
+    public AbstractAttack[] attacks;
+
+    /// <summary>
     /// Direction of the character's movement. Usually set in Update() method.
     /// </summary>
     protected Vector2 movementDirection;
@@ -72,12 +78,12 @@ public abstract class AbstractCharacter : MonoBehaviour
     public void TakeDamage(int damage)
     {
         Debug.Log(name + " taking " + damage + " damage.");
-        currentHP -= damage;
-        UpdateHealthBar(currentHP);
-        if (currentHP <= 0)
-        {
-            Die();
-        }
+        //currentHP -= damage;
+        //UpdateHealthBar(currentHP);
+        //if (currentHP <= 0)
+        //{
+        //    Die();
+        //}
     }
 
     /// <summary>
@@ -177,10 +183,11 @@ public abstract class AbstractCharacter : MonoBehaviour
         }
     }
 
-    protected void SetAnimatorSpeedParameter(float speed)
+    protected void SetAnimatorWalkingAnimation(float speed)
     {
         if (animator != null)
         {
+            //Debug.Log("Setting " + IS_MOVING_ANIM_NAME + " to: " + ((Math.Abs(speed) - 0) > 0.001));
             animator.SetBool(IS_MOVING_ANIM_NAME, (Math.Abs(speed) - 0) > 0.001);
         }
     }
@@ -231,16 +238,17 @@ public abstract class AbstractCharacter : MonoBehaviour
     {
         if (ShouldMove())
         {
-            //rb.MovePosition(rb.position + (-(Vector2)stiffBody.transform.position + movementDirection).normalized * movementSpeed * Time.fixedDeltaTime);
+            Debug.Log(name + " is moving with speed " + GetMovementSpeed());
             rb.MovePosition(rb.position + movementDirection.normalized * GetMovementSpeed() * Time.fixedDeltaTime);
             UpdateSpriteZAxis();
 
-            SetAnimatorSpeedParameter(movementDirection.normalized.magnitude);
+            SetAnimatorWalkingAnimation(movementDirection.normalized.magnitude*GetMovementSpeed());
             Flip();
             OnAfterMoved();
         }
         else
         {
+            SetAnimatorWalkingAnimation(0);
             // don't move if we're near the player
             rb.MovePosition(rb.position);
         }

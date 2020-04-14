@@ -15,9 +15,9 @@ public class SalinatorSpawner : AbstractSpawner
         random = new System.Random();
     }
 
-    protected override GameObject GetGameObjectToSpawn(GameObject spawnPoint)
+    protected override GameObject[] GetGameObjectsToSpawn(GameObject spawnPoint)
     {
-        return salina;
+        return new GameObject[] { salina };
     }
 
     protected override GameObject GetSpawnPoint()

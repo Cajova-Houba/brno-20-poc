@@ -12,6 +12,10 @@ public class PlayerAttack : AbstractAttack
     public LayerMask enemyLayers;
 
     bool isAttacking = false;
+    public override bool IsInAttackingRange()
+    {
+        return true;
+    }
 
     protected override bool ShouldAttack()
     {
@@ -44,4 +48,5 @@ public class PlayerAttack : AbstractAttack
 
         }
     }
+
 }

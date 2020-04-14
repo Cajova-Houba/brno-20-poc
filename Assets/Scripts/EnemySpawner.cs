@@ -17,10 +17,10 @@ public class EnemySpawner : AbstractSpawner
         random = new System.Random();
     }
 
-    protected override GameObject GetGameObjectToSpawn(GameObject spawnPoint)
+    protected override GameObject[] GetGameObjectsToSpawn(GameObject spawnPoint)
     {
         EnemySpawnPoint esp = spawnPoint.GetComponent<EnemySpawnPoint>();
-        return esp.GetEnemyToSpawn();
+        return esp.GetEnemiesToSpawn();
     }
 
     protected override GameObject GetSpawnPoint()

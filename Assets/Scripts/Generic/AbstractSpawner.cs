@@ -43,10 +43,16 @@ public abstract class AbstractSpawner : MonoBehaviour
             GameObject spawnPoint = GetSpawnPoint();
             if (spawnPoint != null)
             {
-                GameObject objectToSpawn = GetGameObjectToSpawn(spawnPoint);
-                Debug.Log("Spawning: " + spawnPoint.transform.position + " ; " + spawnPoint.transform.rotation);
-                GameObject newObject = Instantiate(objectToSpawn, spawnPoint.transform.position, spawnPoint.transform.rotation);
-                PostSpawnAction(newObject);
+                GameObject[] objectsToSpawn = GetGameObjectsToSpawn(spawnPoint);
+                if (objectsToSpawn != null && objectsToSpawn.Length > 0) 
+                {
+                    foreach(GameObject objectToSpawn in objectsToSpawn)
+                    {
+                        Debug.Log("Spawning: " + spawnPoint.transform.position + " ; " + spawnPoint.transform.rotation);
+                        GameObject newObject = Instantiate(objectToSpawn, spawnPoint.transform.position, spawnPoint.transform.rotation);
+                        PostSpawnAction(newObject);
+                    }
+                }
             }
 
             CalculateSpawnTime();
@@ -98,7 +104,7 @@ public abstract class AbstractSpawner : MonoBehaviour
     /// </summary>
     protected abstract void Init();
 
-    protected abstract GameObject GetGameObjectToSpawn(GameObject spawnPoint);
+    protected abstract GameObject[] GetGameObjectsToSpawn(GameObject spawnPoint);
 
     protected abstract GameObject GetSpawnPoint();
 

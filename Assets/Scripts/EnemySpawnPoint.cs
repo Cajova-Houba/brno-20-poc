@@ -9,6 +9,14 @@ public class EnemySpawnPoint : MonoBehaviour
     /// </summary>
     public int spawnPointRange = 10;
 
+    /// <summary>
+    /// When the spawn points is active and is asked to get enemy to spawn, random double is generated
+    /// and if it's > than this number, spawning is skipped.
+    /// 
+    /// If this number is > 1, then there's also chance of spawning multiple enemies.
+    /// </summary>
+    public float spawnRateModifier = 1f;
+
     public LayerMask playerLayer;
 
     /// <summary>
@@ -28,9 +36,27 @@ public class EnemySpawnPoint : MonoBehaviour
         return playerColisions.Length > 0;
     }
 
-    public GameObject GetEnemyToSpawn()
+    public GameObject[] GetEnemiesToSpawn()
     {
-        return spawnableEnemies[random.Next(spawnableEnemies.Length)];
+        if (random.NextDouble() <= spawnRateModifier)
+        {
+            if (spawnRateModifier > 1 && random.NextDouble() <= (spawnRateModifier - 1f))
+            {
+                return new GameObject[] {
+                    spawnableEnemies[random.Next(spawnableEnemies.Length)],
+                    spawnableEnemies[random.Next(spawnableEnemies.Length)]
+                };
+            } else
+            {
+                return new GameObject[]
+                {
+                    spawnableEnemies[random.Next(spawnableEnemies.Length)]
+                };
+            }
+        } else
+        {
+            return null;
+        }
     }
 
     // Start is called before the first frame update

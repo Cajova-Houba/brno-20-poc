@@ -9,6 +9,11 @@ namespace Assets.Scripts.Generic
 {
     public abstract class AbstractAttack : MonoBehaviour
     {
+        /// <summary>
+        /// Layer which is targetted by this attack.
+        /// </summary>
+        public LayerMask targetLayer;
+
         public Transform attackPoint;
 
         /// <summary>
@@ -30,7 +35,39 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public int requiredEnergy = 0;
 
+        /// <summary>
+        /// Duration of the attack animation. Also the duration for which the character won't move.
+        /// </summary>
+        public float animationSecDuration = 1f;
+
         protected float nextTimeToAttack = 0f;
+
+        /// <summary>
+        /// Checks if there are any objects in range of the attack point from given layer.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsInAttackingRange();
+
+        /// <summary>
+        /// Checks if the attack cooldown has passed and any additional conditions in ShouldAttack() are fulfilled.
+        /// 
+        /// This method returning true means this attack can be used by calling the UseAttackMethod().
+        /// </summary>
+        /// <returns></returns>
+        public bool CanUseAttack()
+        {
+            return IsTimeToAttack() && ShouldAttack();
+        }
+
+        /// <summary>
+        /// Uses this attack. Plays the animations and re-sets the cooldown.
+        /// </summary>
+        public void UseAttack()
+        {
+            PlayAttackAnimation();
+            Attack();
+            CalculateNextTimeToAttack();
+        }
 
         /// <summary>
         /// Additional conditions for attacking provided by implementing class.
@@ -42,16 +79,7 @@ namespace Assets.Scripts.Generic
         /// Attack logic.
         /// </summary>
         protected abstract void Attack();
-
-        protected void FixedUpdate() {
-            if (IsTimeToAttack() && ShouldAttack())
-            {
-                Debug.Log(name+" is attacking");
-                PlayAttackAnimation();
-                Attack();
-                CalculateNextTimeToAttack();
-            }
-        }
+        
 
         protected void PlayAttackAnimation()
         {
