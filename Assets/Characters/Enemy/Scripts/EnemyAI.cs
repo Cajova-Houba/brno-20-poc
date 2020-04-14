@@ -246,8 +246,7 @@ public class EnemyAI : AbstractCharacter
     private IEnumerator UseAndResetAttack()
     {
         attacking = true;
-        nextAttackToUse.UseAttack();
-        yield return new WaitForSeconds(nextAttackToUse.animationSecDuration);
+        yield return StartCoroutine(nextAttackToUse.UseAttack());
         Debug.Log("Attacking coroutine finished.");
         nextAttackToUse = null;
         attacking = false;

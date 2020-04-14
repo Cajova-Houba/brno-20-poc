@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,9 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public float attackRange = 0.5f;
 
+        /// <summary>
+        /// Animator used to send triggers to play animations.
+        /// </summary>
         public Animator animator;
 
         public int damage = 30;
@@ -40,6 +44,9 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public float animationSecDuration = 1f;
 
+        /// <summary>
+        /// Cooldown.
+        /// </summary>
         protected float nextTimeToAttack = 0f;
 
         /// <summary>
@@ -60,13 +67,39 @@ namespace Assets.Scripts.Generic
         }
 
         /// <summary>
-        /// Uses this attack. Plays the animations and re-sets the cooldown.
+        /// Coroutine that uses this attack. Plays the animation, yields, actually 
+        /// executes the attack logic, waits for the animation to finish and re-sets the cooldown.
+        /// 
+        /// The attack is split into two parts so that the actual damage is done in the middle of the animation
+        /// which is sort of the point where the player/enemy touches its target.
         /// </summary>
-        public void UseAttack()
+        public IEnumerator UseAttack()
         {
-            PlayAttackAnimation();
-            Attack();
             CalculateNextTimeToAttack();
+            PlayAttackAnimation();
+            yield return new WaitForSeconds(GetTimeToStartAttacking());
+            Attack();
+            yield return new WaitForSeconds(GetTimeToFinishAttackAnimation());
+        }
+
+
+        /// <summary>
+        /// Returns the time needed to finish the animation afther the actual Attack() is 
+        /// executed.
+        /// </summary>
+        /// <returns></returns>
+        protected float GetTimeToFinishAttackAnimation()
+        {
+            return animationSecDuration / 2.0f;
+        }
+
+        /// <summary>
+        /// Returns the time after the attack animation start when Attack() should be executed.
+        /// </summary>
+        /// <returns></returns>
+        protected float GetTimeToStartAttacking()
+        {
+            return animationSecDuration / 2.0f;
         }
 
         /// <summary>
@@ -81,20 +114,26 @@ namespace Assets.Scripts.Generic
         protected abstract void Attack();
         
 
-        protected void PlayAttackAnimation()
+        public void PlayAttackAnimation()
         {
-            Debug.Log("Playing attack animation");
             if (animator != null)
             {
                 animator.SetTrigger("attacking");
             }
         }
 
+        /// <summary>
+        /// Sets next cooldown.
+        /// </summary>
         protected void CalculateNextTimeToAttack()
         {
             nextTimeToAttack = Time.time + 1f / attackRate;
         }
 
+        /// <summary>
+        /// Checks whether the cooldown has ticked off.
+        /// </summary>
+        /// <returns></returns>
         protected bool IsTimeToAttack()
         {
             return Time.time >= nextTimeToAttack;
@@ -112,6 +151,5 @@ namespace Assets.Scripts.Generic
 
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class PlayerControl : AbstractCharacter
     public GameObject deadPlayer;
 
     public GameObject restartDialog;
+
+    bool isAttacking = false;
 
     protected override void Init()
     {
@@ -47,6 +50,24 @@ public class PlayerControl : AbstractCharacter
     {
         movementDirection.x = Input.GetAxis("Horizontal");
         movementDirection.y = Input.GetAxis("Vertical");
+
+        isAttacking = Input.GetKeyDown(KeyCode.J);
+
+        HandleAttack();
+    }
+
+    private void HandleAttack()
+    {
+        if (attacks == null || attacks.Length == 0)
+        {
+            return;
+        }
+
+        AbstractAttack attack = attacks[0];
+        if (isAttacking && attack.CanUseAttack())
+        {
+            StartCoroutine(attack.UseAttack());
+        }
     }
 
     /// <summary>
