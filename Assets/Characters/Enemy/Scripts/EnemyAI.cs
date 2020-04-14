@@ -48,11 +48,14 @@ public class EnemyAI : AbstractCharacter
     System.Random random;
 
     /// <summary>
-    /// Attack to be used. Also serves as an 'isAttacking' flag and movement speed is 
-    /// set to 0 when this object is set.
+    /// Attack to be used. Reset in coroutine after it's used.
     /// </summary>
     AbstractAttack nextAttackToUse;
 
+    /// <summary>
+    /// Flag set when attack starts and re-set when the attack ends. When the attacking
+    /// flag is set, no new attack can be picked.
+    /// </summary>
     bool attacking = false;
 
     /// <summary>
