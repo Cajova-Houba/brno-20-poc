@@ -95,9 +95,9 @@ public class EnemyAI : AbstractCharacter
 
     protected override float GetMovementSpeed()
     {
-        if (IsAttacking())
+        if (IsAttacking() || IsStunned())
         {
-            // enemies do not move when they are attacking
+            // enemies do not move when they are attacking or are stunned
             return 0;
         }
         else if (IsPlayerNear())
