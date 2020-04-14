@@ -78,12 +78,12 @@ public abstract class AbstractCharacter : MonoBehaviour
     public void TakeDamage(int damage)
     {
         Debug.Log(name + " taking " + damage + " damage.");
-        //currentHP -= damage;
-        //UpdateHealthBar(currentHP);
-        //if (currentHP <= 0)
-        //{
-        //    Die();
-        //}
+        currentHP -= damage;
+        UpdateHealthBar(currentHP);
+        if (currentHP <= 0)
+        {
+            Die();
+        }
     }
 
     /// <summary>
