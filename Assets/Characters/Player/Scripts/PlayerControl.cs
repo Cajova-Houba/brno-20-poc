@@ -122,6 +122,7 @@ public class PlayerControl : AbstractCharacter
         Debug.Log("Player attack finished.");
         isAttacking = false;
         killedEnemies += attack.GetTargetKillCount();
+        Debug.Log("Killed enemies:" + killedEnemies);
     }
 
     /// <summary>

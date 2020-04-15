@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Levels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,12 @@ public class EnemySpawner : AbstractSpawner
 {
     System.Random random;
 
+    public Level1 level1;
+
+    public EnemySpawnPoint[] lowSpawnPoints;
+    public EnemySpawnPoint[] midSpawnPoints;
+    public EnemySpawnPoint[] highSpawnPoints;
+
     protected override void Init()
     {
         random = new System.Random();
@@ -20,28 +27,53 @@ public class EnemySpawner : AbstractSpawner
     protected override GameObject[] GetGameObjectsToSpawn(GameObject spawnPoint)
     {
         EnemySpawnPoint esp = spawnPoint.GetComponent<EnemySpawnPoint>();
-        return esp.GetEnemiesToSpawn();
+        return esp.SpawnEnemy();
     }
 
     protected override GameObject GetSpawnPoint()
     {
-        List<GameObject> enemySpawnPoints = new List<GameObject>();
-        foreach(GameObject sp in spawnPoints)
+        switch(level1.GetLevelState())
         {
-            EnemySpawnPoint esp = sp.GetComponent<EnemySpawnPoint>();
-            if (esp != null && esp.IsPlayerNear())
+            case 0:
+                return UseOneSpawnPoint(lowSpawnPoints);
+            case 1:
+                return UseOneSpawnPoint(midSpawnPoints);
+            case 2:
+                return UseOneSpawnPoint(highSpawnPoints);
+            default:
+                if (level1.GetLevelState() > 2)
+                {
+                    return UseOneSpawnPoint(highSpawnPoints);
+                } else
+                {
+                    return null;
+                }
+        }
+    }
+
+    /// <summary>
+    /// Randomly picks one spawn point near to player from given set and returns it.
+    /// </summary>
+    /// <param name="spawnPoints"></param>
+    /// <returns>Spawn point or null if no spawn point is avalable.</returns>
+    private GameObject UseOneSpawnPoint(EnemySpawnPoint[] spawnPoints)
+    {
+        List<EnemySpawnPoint> spawnPointsNearPlayer = new List<EnemySpawnPoint>();
+        foreach (EnemySpawnPoint sp in spawnPoints)
+        {
+            if (sp.IsPlayerNear())
             {
-                enemySpawnPoints.Add(sp);
+                spawnPointsNearPlayer.Add(sp);
             }
         }
 
-        if (enemySpawnPoints.Count == 0)
+        int spCount = spawnPointsNearPlayer.Count;
+        if (spCount == 0)
         {
             return null;
-        } else
-        {
-            return enemySpawnPoints[random.Next(enemySpawnPoints.Count)];
         }
+
+        return spawnPointsNearPlayer[random.Next(spCount)].gameObject;
     }
 
     protected override string GetSpawnPointTag()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Levels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,13 +12,9 @@ namespace Assets.Scripts
     {
         public PlayerControl player;
 
-        public Barrier[] barriers;
+        public Level1 level1;
 
-        /// <summary>
-        /// Currently only 3 states in level 1
-        /// then the level ends
-        /// </summary>
-        private int level1State = 0;
+        public Barrier[] barriers;
 
         void Update()
         {
@@ -34,20 +31,18 @@ namespace Assets.Scripts
         /// <param name="killCount"></param>
         private void TryUnlockNextBarrier(int killCount)
         {
-            if (level1State == 3)
+            int lState = level1.GetLevelState();
+
+            if (barriers == null || lState < 0 || barriers.Length <= lState)
             {
                 return;
             }
 
-            if (barriers == null || barriers.Length != 3)
+            if (barriers[lState].enemyLimit <= killCount)
             {
-                return;
-            }
-
-            if (barriers[level1State].enemyLimit <= killCount)
-            {
-                barriers[level1State].gameObject.SetActive(false);
-                level1State++;
+                Debug.Log("Disabling barrier: " + lState);
+                barriers[lState].gameObject.SetActive(false);
+                level1.IncrementLevelState();
             }
         }
     }

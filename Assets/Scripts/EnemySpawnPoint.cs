@@ -5,6 +5,11 @@ using UnityEngine;
 public class EnemySpawnPoint : MonoBehaviour
 {
     /// <summary>
+    /// Max number of enemies this spawn point can spawn.
+    /// </summary>
+    public int spawnPointLimit = 10;
+
+    /// <summary>
     /// Range used to detect whether player is nearby or not.
     /// </summary>
     public int spawnPointRange = 10;
@@ -26,6 +31,8 @@ public class EnemySpawnPoint : MonoBehaviour
 
     private System.Random random;
 
+    private int enemiesSpawned = 0;
+
     /// <summary>
     /// Checks if the player is in range of this spawn point.
     /// </summary>
@@ -36,18 +43,26 @@ public class EnemySpawnPoint : MonoBehaviour
         return playerColisions.Length > 0;
     }
 
-    public GameObject[] GetEnemiesToSpawn()
+    public GameObject[] SpawnEnemy()
     {
+        if (enemiesSpawned >= spawnPointLimit)
+        {
+            Debug.Log(name + " reached its spawn limit.");
+            return null;
+        }
+
         if (random.NextDouble() <= spawnRateModifier)
         {
             if (spawnRateModifier > 1 && random.NextDouble() <= (spawnRateModifier - 1f))
             {
+                enemiesSpawned += 2;
                 return new GameObject[] {
                     spawnableEnemies[random.Next(spawnableEnemies.Length)],
                     spawnableEnemies[random.Next(spawnableEnemies.Length)]
                 };
             } else
             {
+                enemiesSpawned++;
                 return new GameObject[]
                 {
                     spawnableEnemies[random.Next(spawnableEnemies.Length)]
@@ -63,6 +78,7 @@ public class EnemySpawnPoint : MonoBehaviour
     void Start()
     {
         random = new System.Random();
+        enemiesSpawned = 0;
     }
 
     // Update is called once per frame
