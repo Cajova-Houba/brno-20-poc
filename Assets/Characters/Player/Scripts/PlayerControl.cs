@@ -19,7 +19,34 @@ public class PlayerControl : AbstractCharacter
 
     public GameObject restartDialog;
 
+    bool attack1Pressed = false;
+
+    /// <summary>
+    /// Flag set for the duration of attack.
+    /// </summary>
     bool isAttacking = false;
+
+    /// <summary>
+    /// Number of enemies killed by player
+    /// </summary>
+    int killedEnemies = 0;
+
+    public int GetKilledEnemiesCount()
+    {
+        return killedEnemies;
+    }
+
+    protected override float GetMovementSpeed()
+    {
+        if (isAttacking)
+        {
+            // attacking = cant move
+            return 0f;
+        } else
+        {
+            return base.GetMovementSpeed();
+        }
+    }
 
     protected override bool IsStunnable()
     {
@@ -57,7 +84,7 @@ public class PlayerControl : AbstractCharacter
         movementDirection.x = Input.GetAxis("Horizontal");
         movementDirection.y = Input.GetAxis("Vertical");
 
-        isAttacking = Input.GetKeyDown(KeyCode.J);
+        attack1Pressed = Input.GetKeyDown(KeyCode.J);
 
         HandleAttack();
     }
@@ -69,11 +96,32 @@ public class PlayerControl : AbstractCharacter
             return;
         }
 
-        AbstractAttack attack = attacks[0];
-        if (isAttacking && attack.CanUseAttack())
+        if (isAttacking)
         {
-            StartCoroutine(attack.UseAttack());
+            // player is already attacking, nothing to do
+            return;
         }
+
+        AbstractAttack attack = attacks[0];
+        if (attack1Pressed && attack.CanUseAttack())
+        {
+            StartCoroutine(DoAttack(attack));
+        }
+    }
+
+    /// <summary>
+    /// Coroutine which will raise attacking flag, executes actual attack
+    /// and after its finished, resets the attacking flag again.
+    /// </summary>
+    /// <param name="attack">Attack to execute.</param>
+    /// <returns></returns>
+    private IEnumerator DoAttack(AbstractAttack attack)
+    {
+        isAttacking = true;
+        yield return StartCoroutine(attack.UseAttack());
+        Debug.Log("Player attack finished.");
+        isAttacking = false;
+        killedEnemies += attack.GetTargetKillCount();
     }
 
     /// <summary>

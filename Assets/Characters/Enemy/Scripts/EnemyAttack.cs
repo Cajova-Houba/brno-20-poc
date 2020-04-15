@@ -31,7 +31,7 @@ public class EnemyAttack : AbstractAttack
         return ai.IsPlayerNear();
     }
 
-    protected override void Attack()
+    protected override int Attack()
     {
         // detect hit enemies
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayer);
@@ -50,5 +50,7 @@ public class EnemyAttack : AbstractAttack
             break;
 
         }
+
+        return 0;
     }
 }

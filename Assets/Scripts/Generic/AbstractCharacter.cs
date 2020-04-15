@@ -92,21 +92,23 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// Also updates health bar.
     /// </summary>
     /// <param name="damage"></param>
-    public void TakeDamage(int damage)
+    /// <returns>True if this character was killed by the damage.</returns>
+    public bool TakeDamage(int damage)
     {
         Debug.Log(name + " taking " + damage + " damage.");
         currentHP -= damage;
         UpdateHealthBar(currentHP);
-        if (currentHP <= 0)
+        bool dead = currentHP <= 0;
+        if (dead)
         {
             Die();
-        }
-        
-        if (IsStunnable() && !IsStunned())
+        } else if (IsStunnable() && !IsStunned())
         {
             // stun the character only if it's stunnable and is not stunned already
             StartCoroutine(Stun());
         }
+
+        return dead;
     }
 
     /// <summary>

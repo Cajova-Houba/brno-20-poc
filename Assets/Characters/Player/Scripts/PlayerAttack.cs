@@ -16,25 +16,27 @@ public class PlayerAttack : AbstractAttack
         return true;
     }
 
-    protected override void Attack()
+    protected override int Attack()
     {
         // detect hit enemies
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, targetLayer);
 
-        // damage enemies
+        // damage all enemies
+        int deadEnemies = 0;
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("Hit " + enemy.name);
             EnemyAI enemyAI = enemy.GetComponentInParent<EnemyAI>();
             if (enemyAI != null)
             {
-                enemyAI.TakeDamage(damage);
+                if(enemyAI.TakeDamage(damage))
+                {
+                    deadEnemies++;
+                }
             }
-
-            // attack only 1 enemy
-            break;
-
         }
+
+        return deadEnemies;
     }
 
 }

@@ -33,7 +33,7 @@ namespace Assets.Characters.Player.Scripts
         }
 
 
-        protected override void Attack()
+        protected override int Attack()
         {
             // use energy, even though noone might be hit by attack
             playerControl.UseEnergy(requiredEnergy);
@@ -54,6 +54,8 @@ namespace Assets.Characters.Player.Scripts
                 // attack only 1 enemy
                 break;
             }
+
+            return 0;
         }
         void Start()
         {

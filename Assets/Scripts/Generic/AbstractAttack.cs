@@ -45,9 +45,26 @@ namespace Assets.Scripts.Generic
         public float animationSecDuration = 1f;
 
         /// <summary>
+        /// 
+        /// animationSecDuration * ratio = animation start duration
+        /// animationSecDuration * (1-ratio) = animation finish duration
+        /// 
+        /// Splits the animationSecDuration into two parts. First part is the duration of animation
+        /// before actual attack, the second part number of seconds it takes for the attack animation
+        /// to finish.
+        /// </summary>
+        public float attactkAnimationStartRatio = 0.5f;
+
+        /// <summary>
         /// Cooldown.
         /// </summary>
         protected float nextTimeToAttack = 0f;
+
+        /// <summary>
+        /// Number of targets killed by one execution of this attack.
+        /// Resets at the beginning of every attack.
+        /// </summary>
+        private int targetsKilled = 0;
 
         /// <summary>
         /// Checks if there are any objects in range of the attack point from given layer.
@@ -75,11 +92,17 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public IEnumerator UseAttack()
         {
+            targetsKilled = 0;
             CalculateNextTimeToAttack();
             PlayAttackAnimation();
             yield return new WaitForSeconds(GetTimeToStartAttacking());
-            Attack();
+            targetsKilled = Attack();
             yield return new WaitForSeconds(GetTimeToFinishAttackAnimation());
+        }
+
+        public int GetTargetKillCount()
+        {
+            return targetsKilled;
         }
 
 
@@ -90,7 +113,7 @@ namespace Assets.Scripts.Generic
         /// <returns></returns>
         protected float GetTimeToFinishAttackAnimation()
         {
-            return animationSecDuration / 2.0f;
+            return animationSecDuration * (1 -attactkAnimationStartRatio);
         }
 
         /// <summary>
@@ -99,7 +122,7 @@ namespace Assets.Scripts.Generic
         /// <returns></returns>
         protected float GetTimeToStartAttacking()
         {
-            return animationSecDuration / 2.0f;
+            return animationSecDuration * attactkAnimationStartRatio;
         }
 
         /// <summary>
@@ -111,7 +134,8 @@ namespace Assets.Scripts.Generic
         /// <summary>
         /// Attack logic.
         /// </summary>
-        protected abstract void Attack();
+        /// <returns>Number of targets killed when executing this method.</returns>
+        protected abstract int Attack();
         
 
         public void PlayAttackAnimation()
