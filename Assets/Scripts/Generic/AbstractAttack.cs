@@ -90,13 +90,20 @@ namespace Assets.Scripts.Generic
         /// The attack is split into two parts so that the actual damage is done in the middle of the animation
         /// which is sort of the point where the player/enemy touches its target.
         /// </summary>
-        public IEnumerator UseAttack()
+        /// <param name="attacker">Reference to the attacker, used for stun check.</param>
+        public IEnumerator UseAttack(AbstractCharacter attacker)
         {
             targetsKilled = 0;
             CalculateNextTimeToAttack();
             PlayAttackAnimation();
             yield return new WaitForSeconds(GetTimeToStartAttacking());
-            targetsKilled = Attack();
+            if (!attacker.IsStunned())
+            {
+                // attack only if the attacker is not stunned.
+                targetsKilled = Attack();
+            }
+
+            // still wait for the animation to finish though
             yield return new WaitForSeconds(GetTimeToFinishAttackAnimation());
         }
 
@@ -142,8 +149,17 @@ namespace Assets.Scripts.Generic
         {
             if (animator != null)
             {
-                animator.SetTrigger("attacking");
+                animator.SetTrigger(GetTriggerName());
             }
+        }
+
+        /// <summary>
+        /// Returns name of the trigger to be used in animation controller to make trasition to the animation of this attack.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetTriggerName()
+        {
+            return "attacking";
         }
 
         /// <summary>

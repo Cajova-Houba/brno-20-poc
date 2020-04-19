@@ -28,6 +28,8 @@ public class EnemyAI : AbstractCharacter
     /// </summary>
     public GameObject[] powerups;
 
+    public bool isPassive = false;
+
     BoxCollider2D boxCollider;
 
     Transform player;
@@ -217,7 +219,7 @@ public class EnemyAI : AbstractCharacter
         }
 
         // if the player is near, follow him and try to attack
-        if (IsPlayerNear())
+        if (IsPlayerNear() && !isPassive)
         {
             movementDirection = player.position - transform.position;
             if (!attacking)
@@ -246,7 +248,7 @@ public class EnemyAI : AbstractCharacter
     private IEnumerator UseAndResetAttack()
     {
         attacking = true;
-        yield return StartCoroutine(nextAttackToUse.UseAttack());
+        yield return StartCoroutine(nextAttackToUse.UseAttack(this));
         Debug.Log("Attacking coroutine finished.");
         nextAttackToUse = null;
         attacking = false;

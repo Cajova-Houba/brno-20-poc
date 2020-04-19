@@ -49,6 +49,8 @@ namespace Assets.Scripts.Levels
 
         public EnemySpawner enemySpawner;
 
+        public GameOverDialog pauseDialog;
+
         /// <summary>
         /// Phases with initial enemies.
         /// </summary>
@@ -89,6 +91,11 @@ namespace Assets.Scripts.Levels
         public override string GetLevelSceneName()
         {
             return "Level1";
+        }
+
+        public int GetEnemiesKilled()
+        {
+            return enemiesKilled;
         }
 
         /// <summary>
@@ -143,6 +150,11 @@ namespace Assets.Scripts.Levels
             {
                 enemiesKilled = player.GetKilledEnemiesCount();
                 TryIncrementPhase();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                pauseDialog.DisplayAsPauseDialog();
             }
         }
 

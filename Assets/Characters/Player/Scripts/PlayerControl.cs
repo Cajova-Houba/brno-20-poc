@@ -18,6 +18,7 @@ public class PlayerControl : AbstractCharacter
     public GameObject restartDialog;
 
     bool attack1Pressed = false;
+    bool attack2Pressed = false;
 
     /// <summary>
     /// Flag set for the duration of attack.
@@ -36,7 +37,7 @@ public class PlayerControl : AbstractCharacter
 
     protected override float GetMovementSpeed()
     {
-        if (isAttacking)
+        if (isAttacking || IsStunned())
         {
             // attacking = cant move
             return 0f;
@@ -49,7 +50,7 @@ public class PlayerControl : AbstractCharacter
     protected override bool IsStunnable()
     {
         // player is not stunnable rn
-        return false;
+        return true;
     }
 
     protected override void Init()
@@ -83,6 +84,7 @@ public class PlayerControl : AbstractCharacter
         movementDirection.y = Input.GetAxis("Vertical");
 
         attack1Pressed = Input.GetKeyDown(KeyCode.J);
+        attack2Pressed = Input.GetKeyDown(KeyCode.K);
 
         HandleAttack();
     }
@@ -94,14 +96,22 @@ public class PlayerControl : AbstractCharacter
             return;
         }
 
-        if (isAttacking)
+        if (isAttacking || IsStunned())
         {
-            // player is already attacking, nothing to do
+            // player is already attacking or is stunned, nothing to do
             return;
         }
 
-        AbstractAttack attack = attacks[0];
-        if (attack1Pressed && attack.CanUseAttack())
+        AbstractAttack attack = null;
+        if (attack1Pressed && attacks[0].CanUseAttack())
+        {
+            attack = attacks[0];
+        } else if (attack2Pressed && attacks[1].CanUseAttack())
+        {
+            attack = attacks[1];
+        }
+
+        if (attack != null)
         {
             StartCoroutine(DoAttack(attack));
         }
@@ -116,7 +126,7 @@ public class PlayerControl : AbstractCharacter
     private IEnumerator DoAttack(AbstractAttack attack)
     {
         isAttacking = true;
-        yield return StartCoroutine(attack.UseAttack());
+        yield return StartCoroutine(attack.UseAttack(this));
         Debug.Log("Player attack finished.");
         isAttacking = false;
         killedEnemies += attack.GetTargetKillCount();
