@@ -1,10 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Script for dialog that acts as a game over dialog as well as pause dialog.
+/// </summary>
 public class GameOverDialog : MonoBehaviour
 {
+    /// <summary>
+    /// Level this dialog is applied to. Used when restarting the level.
+    /// </summary>
+    public AbstractLevel level;
+
     void Start()
     {
         gameObject.SetActive(false);
@@ -12,7 +19,7 @@ public class GameOverDialog : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene(level.GetLevelSceneName());
     }
 
     public void DisplayMenu()

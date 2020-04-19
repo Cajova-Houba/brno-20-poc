@@ -6,83 +6,102 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Iterates through its spawn points and picks the active ones. Then randomly chooses one 
-/// of the active spawnpoints and spawn the enemy.
+/// Spawn points are dividied into 4 stages on the map as follows:
+/// 
+/// 0: 2 spawn points, easy enemies
+/// 1: 2 spawn points, normal enemies
+/// 2: 2 spawn poitns, normal enemies
+/// 3: 2 spawn points, hard enemies
 /// </summary>
-public class EnemySpawner : AbstractSpawner
+public class EnemySpawner : MonoBehaviour
 {
+    public const int MAX_STAGE = 3;
+
     System.Random random;
 
-    public Level1 level1;
+    public EnemySpawnPoint[] stage0;
+    public EnemySpawnPoint[] stage1;
+    public EnemySpawnPoint[] stage2;
+    public EnemySpawnPoint[] stage3;
 
-    public EnemySpawnPoint[] lowSpawnPoints;
-    public EnemySpawnPoint[] midSpawnPoints;
-    public EnemySpawnPoint[] highSpawnPoints;
+    /// <summary>
+    /// Number of the current stage, starts at 0.
+    /// </summary>
+    int currentStage = 0;
 
-    protected override void Init()
+    /// <summary>
+    /// Spawns given number of enemies at spawn points in the current stage.
+    /// </summary>
+    /// <param name="enemyCount">Number of enemies to spawn.</param>
+    public void SpawnInCurrentStage(int enemyCount)
+    {
+        EnemySpawnPoint[] spawnPointsToUse;
+        switch(currentStage)
+        {
+            case 0:
+                spawnPointsToUse = stage0;
+                break;
+            case 1:
+                spawnPointsToUse = stage1;
+                break;
+            case 2:
+                spawnPointsToUse = stage2;
+                break;
+            case 3:
+            default:
+                spawnPointsToUse = stage3;
+                break;
+        }
+
+        UseSpawnPoints(spawnPointsToUse, enemyCount);
+    }
+    
+    /// <summary>
+    /// Increments the current stage up to the MAX_STAGE.
+    /// </summary>
+
+    public void IncrementStage()
+    {
+        if (currentStage == MAX_STAGE)
+        {
+            return;
+        }
+
+        Debug.Log("Incrementing spawn stage " + currentStage);
+        currentStage++;
+    }
+
+
+    private void Start()
+    {
+
+    }
+
+    private void Update()
     {
         random = new System.Random();
     }
 
-    protected override GameObject[] GetGameObjectsToSpawn(GameObject spawnPoint)
-    {
-        EnemySpawnPoint esp = spawnPoint.GetComponent<EnemySpawnPoint>();
-        return esp.SpawnEnemy();
-    }
-
-    protected override GameObject GetSpawnPoint()
-    {
-        switch(level1.GetLevelState())
-        {
-            case 0:
-                return UseOneSpawnPoint(lowSpawnPoints);
-            case 1:
-                return UseOneSpawnPoint(midSpawnPoints);
-            case 2:
-                return UseOneSpawnPoint(highSpawnPoints);
-            default:
-                if (level1.GetLevelState() > 2)
-                {
-                    return UseOneSpawnPoint(highSpawnPoints);
-                } else
-                {
-                    return null;
-                }
-        }
-    }
-
     /// <summary>
-    /// Randomly picks one spawn point near to player from given set and returns it.
+    /// Randomly spawns given number of enemies on given spawn points.
     /// </summary>
-    /// <param name="spawnPoints"></param>
-    /// <returns>Spawn point or null if no spawn point is avalable.</returns>
-    private GameObject UseOneSpawnPoint(EnemySpawnPoint[] spawnPoints)
+    /// <param name="spawnPoints">Spawn points to use.</param>
+    /// <param name="enemiesToSpawn">Number of enemies to spawn.</param>
+    private void UseSpawnPoints(EnemySpawnPoint[] spawnPoints, int enemiesToSpawn)
     {
-        List<EnemySpawnPoint> spawnPointsNearPlayer = new List<EnemySpawnPoint>();
-        foreach (EnemySpawnPoint sp in spawnPoints)
+        int spCount = spawnPoints.Length;
+        for(int i = 0; i < enemiesToSpawn; i++)
         {
-            if (sp.IsPlayerNear())
-            {
-                spawnPointsNearPlayer.Add(sp);
-            }
+            EnemySpawnPoint spawnPoint = spawnPoints[random.Next(spCount)];
         }
 
-        int spCount = spawnPointsNearPlayer.Count;
-        if (spCount == 0)
+        foreach(EnemySpawnPoint spawnPoint in spawnPoints)
         {
-            return null;
+
+            GameObject objectToSpawn = spawnPoint.SpawnEnemy();
+            Debug.Log("Spawning: " + spawnPoint.transform.position + " ; " + spawnPoint.transform.rotation);
+            GameObject newObject = Instantiate(objectToSpawn, spawnPoint.transform.position, spawnPoint.transform.rotation);
         }
-
-        return spawnPointsNearPlayer[random.Next(spCount)].gameObject;
-    }
-
-    protected override string GetSpawnPointTag()
-    {
-        return "SpawnPoint";
-    }
-
-    protected override float GetSettingsSpawnRate()
-    {
-        return SettingsHolder.enemySpawnRate;
     }
 }
+ 

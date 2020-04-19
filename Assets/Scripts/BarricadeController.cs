@@ -12,38 +12,40 @@ namespace Assets.Scripts
     {
         public PlayerControl player;
 
-        public Level1 level1;
-
         public Barrier[] barriers;
 
-        void Update()
-        {
-            if (player != null)
-            {
-                int killCount = player.GetKilledEnemiesCount();
-                TryUnlockNextBarrier(killCount);
-            }
-        }
+        /// <summary>
+        /// Index to barriers marking the currently active barrier.
+        /// </summary>
+        private int activeBarrier;
 
         /// <summary>
         /// If the killCount is high enough, increments the level state and unlocks next barrier.
         /// </summary>
         /// <param name="killCount"></param>
-        private void TryUnlockNextBarrier(int killCount)
+        /// <returns>True if the barrier was unlocked.</returns>
+        public bool TryUnlockNextBarrier(int killCount)
         {
-            int lState = level1.GetLevelState();
-
-            if (barriers == null || lState < 0 || barriers.Length <= lState)
+            if (barriers == null || activeBarrier < 0 || barriers.Length <= activeBarrier)
             {
-                return;
+                Debug.Log("Cant unlock next barrier.");
+                return false;
             }
 
-            if (barriers[lState].enemyLimit <= killCount)
+            if (barriers[activeBarrier].enemyLimit <= killCount)
             {
-                Debug.Log("Disabling barrier: " + lState);
-                barriers[lState].gameObject.SetActive(false);
-                level1.IncrementLevelState();
+                Debug.Log("Disabling barrier: " + activeBarrier);
+                barriers[activeBarrier].gameObject.SetActive(false);
+                activeBarrier++;
+                return true;
             }
+
+            return false;
+        }
+
+        private void Start()
+        {
+            activeBarrier = 0;
         }
     }
 }

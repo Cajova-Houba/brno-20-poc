@@ -8,9 +8,7 @@ using UnityEngine;
 /// Handles movements and holds player's HP.
 /// </summary>
 public class PlayerControl : AbstractCharacter
-{
-
-    public BoxCollider2D boxCollider;
+{ 
 
     /// <summary>
     /// Prefab of the dead player object that is to be spawned when the player dies.
@@ -123,18 +121,5 @@ public class PlayerControl : AbstractCharacter
         isAttacking = false;
         killedEnemies += attack.GetTargetKillCount();
         Debug.Log("Killed enemies:" + killedEnemies);
-    }
-
-    /// <summary>
-    /// Draw the box colider.
-    /// </summary>
-    void OnDrawGizmosSelected()
-    {
-        if (boxCollider == null)
-        {
-            return;
-        }
-
-        Gizmos.DrawWireCube(boxCollider.transform.position, boxCollider.offset);
     }
 }
