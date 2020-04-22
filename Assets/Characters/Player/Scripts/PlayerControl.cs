@@ -17,6 +17,16 @@ public class PlayerControl : AbstractCharacter
 
     public GameObject restartDialog;
 
+    /// <summary>
+    /// Guiding point for enemies. Instead of following the player's position, the will try to follow this point.
+    /// </summary>
+    public GameObject frontTargetPoint;
+
+    /// <summary>
+    /// Same as front target but this one is behind the player.
+    /// </summary>
+    public GameObject backTargetPoint;
+
     bool attack1Pressed = false;
     bool attack2Pressed = false;
 

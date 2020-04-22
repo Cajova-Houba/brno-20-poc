@@ -18,9 +18,14 @@ namespace Assets.Scripts.Generic
         public Transform attackPoint;
 
         /// <summary>
-        /// Attack range around attack point.
+        /// Attack range around attack point. Damage is applied if the player's hitbox is in this range.
         /// </summary>
         public float attackRange = 0.5f;
+
+        /// <summary>
+        /// Can can be executed if the target is in this range.
+        /// </summary>
+        public float attackActiveRange = 1f;
 
         /// <summary>
         /// Animator used to send triggers to play animations.

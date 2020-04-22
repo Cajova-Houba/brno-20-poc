@@ -31,12 +31,20 @@ public class DebugInfo : MonoBehaviour
 
     private void PrintEnemyCount()
     {
+        if (enemyCountText == null)
+        {
+            return;
+        }
         int enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
         enemyCountText.text = "Enemy count: " + enemyCount;
     }
 
     private void PrintTramSpawnRate()
     {
+        if (tramSpawner == null)
+        {
+            return;
+        }
         float tramSpawnRateInverse = tramSpawner.GetUsedSpawnRate();
         string isEnabledText = tramSpawner.spawningEnabled ? " (enabled)" : " (disabled)";
         tramSpawnRateText.text = "Salina spawn rate: " + tramSpawnRateInverse + "/s"+isEnabledText;

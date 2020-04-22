@@ -57,6 +57,11 @@ namespace Assets.Scripts.Levels
         public Level1Phase[] phases;
 
         /// <summary>
+        /// End of level marker/portal/whatever to be displayed when all enemies are dead.
+        /// </summary>
+        public GameObject levelExit;
+
+        /// <summary>
         /// Total number of enemies killed by player in this level.
         /// </summary>
         int enemiesKilled = 0;
@@ -75,13 +80,14 @@ namespace Assets.Scripts.Levels
         /// <summary>
         /// Increments the level phase counter, removes possible barries and spawns enemies for the new phase, if necessary.
         /// </summary>
-        public void NextLevelPhase()
+        public void NextLevePhase()
         {
             Debug.Log("Incrementing level phase " + levelPhase);
             levelPhase ++;
             barricadeController.TryUnlockNextBarrier(enemiesKilled);
             ActivateCurrentPhase();
             SpawnEnemiesForCurrentPhase();
+            UnlockLevelExit();
         }
 
         public int GetLevelState()
@@ -96,6 +102,14 @@ namespace Assets.Scripts.Levels
         public int GetEnemiesKilled()
         {
             return enemiesKilled;
+        }
+
+        private void UnlockLevelExit()
+        {
+            if (levelPhase == LAST_PHASE)
+            {
+                levelExit.SetActive(true);
+            }
         }
 
         /// <summary>
@@ -170,7 +184,7 @@ namespace Assets.Scripts.Levels
 
             if (enemiesKilled == killsForNextPhase[levelPhase])
             {
-                NextLevelPhase();
+                NextLevePhase();
             }
         }
 

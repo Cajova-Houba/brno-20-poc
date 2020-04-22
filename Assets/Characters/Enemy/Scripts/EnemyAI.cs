@@ -30,6 +30,12 @@ public class EnemyAI : AbstractCharacter
 
     public bool isPassive = false;
 
+    /// <summary>
+    /// Minimal distance from one of the players target points. Enemy will stop moving after reaching this 
+    /// distance from the target point.
+    /// </summary>
+    public float playerTargetPointMinDistance = 0.05f;
+
     BoxCollider2D boxCollider;
 
     Transform player;
@@ -69,9 +75,24 @@ public class EnemyAI : AbstractCharacter
         return player != null && Math.Abs((player.position - gameObject.transform.position).magnitude) <= playerDetectionRange;
     }
 
+    /// <summary>
+    /// Returns true if one of the player's target points was reached.
+    /// </summary>
+    /// <returns></returns>
     protected bool IsNextToPlayer()
     {
-        return player != null && Math.Abs((player.position - gameObject.transform.position).magnitude) <= 1.5f;
+        if (player == null)
+        {
+            return false;
+        }
+
+        Vector2 frontT, backT;
+        GetPlayerTargetDirections(out frontT, out backT);
+
+        //Debug.Log("fornt distance: " + frontT.magnitude);
+        //Debug.Log("back distance: " + backT.magnitude);
+        return Math.Abs(frontT.magnitude) < playerTargetPointMinDistance 
+            || Math.Abs(backT.magnitude) < playerTargetPointMinDistance;
     }
 
     protected override void OnDying()
@@ -221,7 +242,9 @@ public class EnemyAI : AbstractCharacter
         // if the player is near, follow him and try to attack
         if (IsPlayerNear() && !isPassive)
         {
-            movementDirection = player.position - transform.position;
+            Debug.Log(name + " is near player.");
+            //movementDirection = player.position - transform.position;
+            MoveToPlayerTarget();
             if (!attacking)
             {
                 if (nextAttackToUse == null)
@@ -235,6 +258,37 @@ public class EnemyAI : AbstractCharacter
                     Debug.Log(name + " is attacking.");
                     StartCoroutine(UseAndResetAttack());
                 }
+            }
+        } else
+        {
+            Debug.Log(name + " is not near player.");
+        }
+    }
+
+    /// <summary>
+    /// Picks the nearest of the player's target points and sets the moving direction accordingly.
+    /// By using the target points, enemies will not follow the player himself, but rather one of 
+    /// these target points from which they can attack him comfortably.
+    /// </summary>
+    /// <returns></returns>
+    private void MoveToPlayerTarget()
+    {
+        if (player == null || player.GetComponent<PlayerControl>() == null)
+        {
+            Debug.Log("Valid player object not set.");
+        }
+        else
+        {
+            Vector2 frontT, backT;
+            GetPlayerTargetDirections(out frontT, out backT);
+
+            // pick the one that is nearer this enemy
+            if (frontT.sqrMagnitude <= backT.sqrMagnitude)
+            {
+                movementDirection = frontT;
+            } else
+            {
+                movementDirection = backT;
             }
         }
     }
@@ -266,10 +320,23 @@ public class EnemyAI : AbstractCharacter
 
         foreach(AbstractAttack attack in attacks)
         {
-            if (attack.CanUseAttack() && attack.IsInAttackingRange())
+            if (attack.CanUseAttack())
             {
-                nextAttackToUse = attack;
-                break;
+                //nextAttackToUse = attack;
+                //break;
+                if (attack.IsInAttackingRange())
+                {
+                    nextAttackToUse = attack;
+                    break;
+                }
+                else
+                {
+                    Debug.Log(name + " can use attack " + attack.name + " but the attack is not in range.");
+                }
+            }
+            else
+            {
+                Debug.Log(name + " can't use attack " + attack.name);
             }
         }
     }
@@ -287,6 +354,25 @@ public class EnemyAI : AbstractCharacter
     {
         return player == null || 
             !IsPlayerNear();
+    }
+
+    /// <summary>
+    /// Sets the directions to player's front and back target point from this enemy's position.
+    /// </summary>
+    /// <param name="frontVector">Vector to the front target.</param>
+    /// <param name="backVector">Vector to the back target.</param>
+    private void GetPlayerTargetDirections(out Vector2 frontVector, out Vector2 backVector)
+    {
+        if (player == null || player.GetComponent<PlayerControl>() == null)
+        {
+            Debug.Log("No valid player object.");
+            frontVector = new Vector2(0,0);
+            backVector = new Vector2(0,0);
+        }
+
+        PlayerControl pc = player.GetComponent<PlayerControl>();
+        frontVector = pc.frontTargetPoint.transform.position - stiffBody.transform.position;
+        backVector = pc.backTargetPoint.transform.position - stiffBody.transform.position;
     }
 
 
