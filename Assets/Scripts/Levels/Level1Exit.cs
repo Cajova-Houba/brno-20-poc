@@ -15,6 +15,7 @@ namespace Assets.Scripts.Levels
     {
         private void HandleLevelExit(PlayerControl playerControl)
         {
+            PlayerDataStore.StorePlayerData(playerControl.GetCharacterStats());
             SceneManager.LoadScene("Vecerka");
         }
 

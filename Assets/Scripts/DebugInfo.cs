@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Levels;
+﻿using Assets.Scripts.Generic;
+using Assets.Scripts.Levels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ public class DebugInfo : MonoBehaviour
     public AbstractSpawner enemySpawner,
         tramSpawner;
 
-    public Level1 level1;
+    public AbstractLevel levelInfo;
 
     void Start()
     {
@@ -48,6 +49,6 @@ public class DebugInfo : MonoBehaviour
         float tramSpawnRateInverse = tramSpawner.GetUsedSpawnRate();
         string isEnabledText = tramSpawner.spawningEnabled ? " (enabled)" : " (disabled)";
         tramSpawnRateText.text = "Salina spawn rate: " + tramSpawnRateInverse + "/s"+isEnabledText;
-        enemiesKilledText.text = "Enemies killed: " + level1.GetEnemiesKilled();
+        enemiesKilledText.text = "Enemies killed: " + levelInfo.GetEnemiesKilled();
     }
 }

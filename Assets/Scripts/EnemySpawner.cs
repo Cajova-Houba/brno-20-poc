@@ -35,6 +35,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="enemyCount">Number of enemies to spawn.</param>
     public void SpawnInCurrentStage(int enemyCount)
     {
+        Debug.Log("Spawning " + enemyCount + " enemies in stage " + currentStage);
         EnemySpawnPoint[] spawnPointsToUse;
         switch(currentStage)
         {
@@ -93,13 +94,8 @@ public class EnemySpawner : MonoBehaviour
         for(int i = 0; i < enemiesToSpawn; i++)
         {
             EnemySpawnPoint spawnPoint = spawnPoints[random.Next(spCount)];
-        }
-
-        foreach(EnemySpawnPoint spawnPoint in spawnPoints)
-        {
-
             GameObject objectToSpawn = spawnPoint.SpawnEnemy();
-            Debug.Log("Spawning: " + spawnPoint.transform.position + " ; " + spawnPoint.transform.rotation);
+            Debug.Log("Spawning: " + objectToSpawn.name + " at "+spawnPoint.gameObject.name);
             GameObject newObject = Instantiate(objectToSpawn, spawnPoint.transform.position, spawnPoint.transform.rotation);
         }
     }

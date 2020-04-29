@@ -76,9 +76,7 @@ public abstract class AbstractCharacter : MonoBehaviour
 
     protected bool stunned = false;
 
-    protected int currentHP;
-
-    protected int currentEnergy;
+    protected CharacterStats currentStats;
 
     /// <summary>
     /// Flag used to govern stun types
@@ -96,9 +94,9 @@ public abstract class AbstractCharacter : MonoBehaviour
     public bool TakeDamage(int damage)
     {
         Debug.Log(name + " taking " + damage + " damage.");
-        currentHP -= damage;
-        UpdateHealthBar(currentHP);
-        bool dead = currentHP <= 0;
+        currentStats.Hp -= damage;
+        UpdateHealthBar();
+        bool dead = currentStats.IsDead();
         if (dead)
         {
             Die();
@@ -110,6 +108,18 @@ public abstract class AbstractCharacter : MonoBehaviour
 
         return dead;
     }
+    
+    public CharacterStats GetCharacterStats()
+    {
+        return currentStats;
+    }
+
+    public void SetCharacterStats(CharacterStats characterStats)
+    {
+        currentStats = characterStats;
+        UpdateHealthBar();
+        UpdateEnergyBar();
+    }
 
     /// <summary>
     /// Returns true if this character is stunned.
@@ -118,6 +128,15 @@ public abstract class AbstractCharacter : MonoBehaviour
     public bool IsStunned()
     {
         return stunned;
+    }
+
+    /// <summary>
+    /// Target followed by this character. 
+    /// </summary>
+    /// <returns>Transform of the target or null if no target is followed.</returns>
+    protected virtual Transform GetTarget()
+    {
+        return null;
     }
 
     /// <summary>
@@ -156,7 +175,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// </summary>
     public void Kill()
     {
-        TakeDamage(currentHP);
+        TakeDamage(currentStats.Hp);
     }
 
     /// <summary>
@@ -165,8 +184,8 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// <param name="hp"></param>
     public void Heal(int hp)
     {
-        currentHP = Math.Min(maxHP, currentHP + hp);
-        UpdateHealthBar(currentHP);
+        currentStats.Heal(hp, maxHP);
+        UpdateHealthBar();
     }
 
     /// <summary>
@@ -175,8 +194,8 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// <param name="energy"></param>
     public void HealEnergy(int energy)
     {
-        currentEnergy = Math.Min(maxEnergy, currentEnergy + energy);
-        UpdateEnergyBar(currentEnergy);
+        currentStats.HealEnergy(energy, maxEnergy);
+        UpdateEnergyBar();
     }
 
     /// <summary>
@@ -186,7 +205,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// <returns>True if currentEnergy >= requiredEnergy</returns>
     public bool HasEnoughEnergy(int requiredEnergy)
     {
-        return currentEnergy >= requiredEnergy;
+        return currentStats.HasEnoughEnergy(requiredEnergy);
     }
 
     /// <summary>
@@ -195,8 +214,8 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// <param name="energy"></param>
     public void UseEnergy(int energy)
     {
-        currentEnergy = Math.Max(0, currentEnergy - energy);
-        UpdateEnergyBar(currentEnergy);
+        currentStats.UseEnergy(energy);
+        UpdateEnergyBar();
     }
 
     /// <summary>
@@ -231,21 +250,47 @@ public abstract class AbstractCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// Flips character object so that it's facing the same direction as his movement.
+    /// Checks if this character is facing his target.
+    /// </summary>
+    /// <returns>True if this character is not facing the target and should flip.</returns>
+    protected bool ShouldFlip()
+    {
+        Transform target = GetTarget();
+        Vector2 targetDir;
+        if (target == null)
+        {
+            targetDir = movementDirection;
+        } else
+        {
+            targetDir = (Vector2)target.position - rb.position;
+        }
+
+        return (targetDir.x < 0 && facingRight) || (targetDir.x > 0 && !facingRight);
+    }
+
+    /// <summary>
+    /// Checks if the character is facing the right direciton and flips if necessary.
+    /// </summary>
+    protected void CheckDirectionAndFlip()
+    {
+        if (ShouldFlip())
+        {
+            Flip();
+        }
+    }
+
+    /// <summary>
+    /// Flips character object around the z axis.
     /// </summary>
     protected void Flip()
     {
-        if ((movementDirection.x < 0 && facingRight)
-            || (movementDirection.x > 0 && !facingRight))
-        {
-            facingRight = !facingRight;
-            rb.transform.Rotate(new Vector3(0, 180, 0));
+        facingRight = !facingRight;
+        rb.transform.Rotate(new Vector3(0, 180, 0));
 
-            //set sprite position to z = -z to 'reverse' the flip rotation
-            Vector3 p = sprite.transform.position;
-            p.z = -p.z;
-            sprite.transform.position = p;
-        }
+        //set sprite position to z = -z to 'reverse' the flip rotation
+        Vector3 p = sprite.transform.position;
+        p.z = -p.z;
+        sprite.transform.position = p;
     }
 
     protected void SetAnimatorWalkingAnimation(float speed)
@@ -260,26 +305,25 @@ public abstract class AbstractCharacter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentHP = maxHP;
-        currentEnergy = maxEnergy;
-        SetHealthBarMax(currentHP);
-        SetEnergyBarMax(currentEnergy);
+        currentStats = new CharacterStats() { Hp = maxHP, Energy = maxEnergy };
+        SetHealthBarMax(maxHP);
+        SetEnergyBarMax(maxEnergy);
         Init();
     }
 
-    protected void UpdateEnergyBar(int newEnergy)
+    protected void UpdateEnergyBar()
     {
         if (energyBar != null)
         {
-            energyBar.SetHealth(newEnergy);
+            energyBar.SetHealth(currentStats.Energy);
         }
     }
 
-    protected void UpdateHealthBar(int newHP)
+    protected void UpdateHealthBar()
     {
         if (healthBar != null)
         {
-            healthBar.SetHealth(newHP);
+            healthBar.SetHealth(currentStats.Hp);
         }
     }
 
@@ -299,7 +343,7 @@ public abstract class AbstractCharacter : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (ShouldMove())
         {
@@ -308,7 +352,7 @@ public abstract class AbstractCharacter : MonoBehaviour
             UpdateSpriteZAxis();
 
             SetAnimatorWalkingAnimation(movementDirection.normalized.magnitude*GetMovementSpeed());
-            Flip();
+            CheckDirectionAndFlip();
             OnAfterMoved();
         }
         else

@@ -95,6 +95,17 @@ public class EnemyAI : AbstractCharacter
             || Math.Abs(backT.magnitude) < playerTargetPointMinDistance;
     }
 
+    protected override Transform GetTarget()
+    {
+        if (IsPlayerNear())
+        {
+            return player.transform;
+        } else
+        {
+            return base.GetTarget();
+        }
+    }
+
     protected override void OnDying()
     {
         SpawnPowerup();

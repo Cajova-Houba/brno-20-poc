@@ -43,8 +43,6 @@ namespace Assets.Scripts.Levels
         /// </summary>
         public const int LAST_PHASE = 16;
 
-        public PlayerControl player;
-
         public BarricadeController barricadeController;
 
         public EnemySpawner enemySpawner;
@@ -99,7 +97,7 @@ namespace Assets.Scripts.Levels
             return "Level1";
         }
 
-        public int GetEnemiesKilled()
+        public override int GetEnemiesKilled()
         {
             return enemiesKilled;
         }
@@ -182,7 +180,7 @@ namespace Assets.Scripts.Levels
                 return;
             }
 
-            if (enemiesKilled == killsForNextPhase[levelPhase])
+            if (enemiesKilled >= killsForNextPhase[levelPhase])
             {
                 NextLevePhase();
             }
