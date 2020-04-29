@@ -29,6 +29,7 @@ public class PlayerControl : AbstractCharacter
 
     bool attack1Pressed = false;
     bool attack2Pressed = false;
+    bool superAttackPressed = false;
 
     /// <summary>
     /// Flag set for the duration of attack.
@@ -95,6 +96,7 @@ public class PlayerControl : AbstractCharacter
 
         attack1Pressed = Input.GetKeyDown(KeyCode.J);
         attack2Pressed = Input.GetKeyDown(KeyCode.K);
+        superAttackPressed = Input.GetKeyDown(KeyCode.L);
 
         HandleAttack();
     }
@@ -113,7 +115,10 @@ public class PlayerControl : AbstractCharacter
         }
 
         AbstractAttack attack = null;
-        if (attack1Pressed && attacks[0].CanUseAttack())
+        if (superAttackPressed && attacks[2].CanUseAttack())
+        {
+            attack = attacks[2];
+        } else if (attack1Pressed && attacks[0].CanUseAttack())
         {
             attack = attacks[0];
         } else if (attack2Pressed && attacks[1].CanUseAttack())
