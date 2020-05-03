@@ -22,7 +22,7 @@ public class EnemyAttack : AbstractAttack
     public override bool IsInAttackingRange()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayer);
-        return hitEnemies.Length > 0;
+        return hitEnemies != null && hitEnemies.Length > 0;
     }
 
     protected override bool ShouldAttack()

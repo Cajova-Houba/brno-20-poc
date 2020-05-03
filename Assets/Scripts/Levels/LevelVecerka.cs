@@ -22,8 +22,9 @@ namespace Assets.Scripts.Levels
             return 0;
         }
 
-        void Start()
+        protected override void Start()
         {
+            base.Start();
             CharacterStats stats = PlayerDataStore.RetrievePlayerData();
             if (stats == null)
             {
@@ -34,7 +35,7 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        void Update()
+        protected override void HandleLevelUpdate()
         {
             if (player != null)
             {
@@ -42,7 +43,8 @@ namespace Assets.Scripts.Levels
                 {
                     youWonDialog.Activate();
                 }
-            } else
+            }
+            else
             {
                 Debug.Log("No player object in level Vecerka.");
             }

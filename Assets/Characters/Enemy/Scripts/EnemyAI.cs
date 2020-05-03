@@ -237,13 +237,16 @@ public class EnemyAI : AbstractCharacter
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        base.Update();
+
+        GameObject playerObj = GameObject.FindGameObjectWithTag(SettingsHolder.playerTagName);
         CalculateRayPoints();
 
         if (playerObj == null)
         {
+            Debug.Log("No game object with tag " + SettingsHolder.playerTagName + " found.");
             player = null;
         } else
         {
@@ -270,9 +273,6 @@ public class EnemyAI : AbstractCharacter
                     StartCoroutine(UseAndResetAttack());
                 }
             }
-        } else
-        {
-            Debug.Log(name + " is not near player.");
         }
     }
 
@@ -379,11 +379,12 @@ public class EnemyAI : AbstractCharacter
             Debug.Log("No valid player object.");
             frontVector = new Vector2(0,0);
             backVector = new Vector2(0,0);
+        } else
+        {
+            PlayerControl pc = player.GetComponent<PlayerControl>();
+            frontVector = pc.frontTargetPoint.transform.position - stiffBody.transform.position;
+            backVector = pc.backTargetPoint.transform.position - stiffBody.transform.position;
         }
-
-        PlayerControl pc = player.GetComponent<PlayerControl>();
-        frontVector = pc.frontTargetPoint.transform.position - stiffBody.transform.position;
-        backVector = pc.backTargetPoint.transform.position - stiffBody.transform.position;
     }
 
 

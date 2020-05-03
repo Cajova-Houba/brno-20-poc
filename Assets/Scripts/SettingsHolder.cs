@@ -11,7 +11,7 @@ namespace Assets.Scripts
     /// </summary>
     public class SettingsHolder
     {
-        public static string currentVersion = "v9";
+        public static string currentVersion = "v10";
 
         public static float enemySpawnRate = 0.7f;
         public static float tramSpawnRate = 0.05f;
@@ -19,8 +19,12 @@ namespace Assets.Scripts
         /// <summary>
         /// Number between 0 and 1.
         /// </summary>
-        public static float powerupDropChance = 0.6f;
+        public static float powerupDropChance = 0.8f;
 
         public static float zRange = 6.2f;
+
+        public static string playerTagName = "PlayerTag";
+
+        public static string deadPlayerTagName = "DeadPlayerTag";
     }
 }

@@ -29,12 +29,12 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// <summary>
     /// Max HP of this character.
     /// </summary>
-    public int maxHP = 100;
+    public uint maxHP = 100;
 
     /// <summary>
     /// Character's energy. Used for skills etc.
     /// </summary>
-    public int maxEnergy = 100;
+    public uint maxEnergy = 100;
 
     /// <summary>
     /// Dependes on the orientation of character sprite.
@@ -48,9 +48,7 @@ public abstract class AbstractCharacter : MonoBehaviour
 
     public Rigidbody2D rb;
 
-    public HealthBar healthBar;
-
-    public HealthBar energyBar;
+    public AbstractAvatar avatar;
 
     public GameObject sprite;
 
@@ -68,6 +66,11 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// How long should the character be stunned when hit.
     /// </summary>
     public float stunDuration;
+
+    /// <summary>
+    /// How long does it take for dying animation to finish.
+    /// </summary>
+    public float dyingAnimationDuration;
 
     /// <summary>
     /// Direction of the character's movement. Usually set in Update() method.
@@ -91,10 +94,10 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// </summary>
     /// <param name="damage"></param>
     /// <returns>True if this character was killed by the damage.</returns>
-    public bool TakeDamage(int damage)
+    public bool TakeDamage(uint damage)
     {
         Debug.Log(name + " taking " + damage + " damage.");
-        currentStats.Hp -= damage;
+        currentStats.TakeDamage(damage);
         UpdateHealthBar();
         bool dead = currentStats.IsDead();
         if (dead)
@@ -182,7 +185,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// Heals this character by given hp (health is still capped at maxHealth).
     /// </summary>
     /// <param name="hp"></param>
-    public void Heal(int hp)
+    public void Heal(uint hp)
     {
         currentStats.Heal(hp, maxHP);
         UpdateHealthBar();
@@ -192,7 +195,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// Heals this character's energy by given amount up to the max energy.
     /// </summary>
     /// <param name="energy"></param>
-    public void HealEnergy(int energy)
+    public void HealEnergy(uint energy)
     {
         currentStats.HealEnergy(energy, maxEnergy);
         UpdateEnergyBar();
@@ -203,7 +206,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// </summary>
     /// <param name="requiredEnergy">Energy required by some action.</param>
     /// <returns>True if currentEnergy >= requiredEnergy</returns>
-    public bool HasEnoughEnergy(int requiredEnergy)
+    public bool HasEnoughEnergy(uint requiredEnergy)
     {
         return currentStats.HasEnoughEnergy(requiredEnergy);
     }
@@ -212,7 +215,7 @@ public abstract class AbstractCharacter : MonoBehaviour
     /// Uses given amount of energy.
     /// </summary>
     /// <param name="energy"></param>
-    public void UseEnergy(int energy)
+    public void UseEnergy(uint energy)
     {
         currentStats.UseEnergy(energy);
         UpdateEnergyBar();
@@ -313,41 +316,40 @@ public abstract class AbstractCharacter : MonoBehaviour
 
     protected void UpdateEnergyBar()
     {
-        if (energyBar != null)
+        if (avatar != null)
         {
-            energyBar.SetHealth(currentStats.Energy);
+            avatar.SetEnergy(currentStats.Energy);
         }
     }
 
     protected void UpdateHealthBar()
     {
-        if (healthBar != null)
+        if (avatar != null)
         {
-            healthBar.SetHealth(currentStats.Hp);
+            avatar.SetHealth(currentStats.Hp);
         }
     }
 
-    private void SetEnergyBarMax(int newMaxEnergy)
+    private void SetEnergyBarMax(uint newMaxEnergy)
     {
-        if (energyBar != null)
+        if (avatar != null)
         {
-            energyBar.SetMaxHealth(newMaxEnergy);
+            avatar.SetMaxEnergy(newMaxEnergy);
         }
     }
 
-    private void SetHealthBarMax(int newMaxHP)
+    private void SetHealthBarMax(uint newMaxHP)
     {
-        if (healthBar != null)
+        if (avatar != null)
         {
-            healthBar.SetMaxHealth(newMaxHP);
+            avatar.SetMaxHealth(newMaxHP);
         }
     }
 
-    private void FixedUpdate()
+    protected virtual void Update()
     {
         if (ShouldMove())
         {
-            Debug.Log(name + " is moving with speed " + GetMovementSpeed());
             rb.MovePosition(rb.position + movementDirection.normalized * GetMovementSpeed() * Time.fixedDeltaTime);
             UpdateSpriteZAxis();
 

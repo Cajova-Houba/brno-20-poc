@@ -32,7 +32,7 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public Animator animator;
 
-        public int damage = 30;
+        public uint damage = 30;
 
         /// <summary>
         /// Number of attacks per 1 second. 
@@ -42,7 +42,7 @@ namespace Assets.Scripts.Generic
         /// <summary>
         /// Energy required to perform this attack.
         /// </summary>
-        public int requiredEnergy = 0;
+        public uint requiredEnergy = 0;
 
         /// <summary>
         /// Duration of the attack animation. Also the duration for which the character won't move.

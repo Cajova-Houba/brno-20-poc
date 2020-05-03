@@ -14,7 +14,7 @@ namespace Assets.Scripts
 
         void Start()
         {
-            gameObject.SetActive(true);
+            gameObject.SetActive(false);
         }
 
         public void Activate()

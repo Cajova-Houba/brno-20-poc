@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Generic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,8 +47,6 @@ namespace Assets.Scripts.Levels
         public BarricadeController barricadeController;
 
         public EnemySpawner enemySpawner;
-
-        public GameOverDialog pauseDialog;
 
         /// <summary>
         /// Phases with initial enemies.
@@ -147,26 +146,23 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        void Start()
+        protected override void Start()
         {
+            base.Start();
             levelPhase = 0;
             enemiesKilled = 0;
+            playerDied = false;
             
             // activate phase 0
             ActivateCurrentPhase();
         }
 
-        void Update()
+        protected override void HandleLevelUpdate()
         {
             if (player != null)
             {
                 enemiesKilled = player.GetKilledEnemiesCount();
                 TryIncrementPhase();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                pauseDialog.DisplayAsPauseDialog();
             }
         }
 

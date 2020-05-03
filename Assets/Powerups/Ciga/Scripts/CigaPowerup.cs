@@ -8,7 +8,7 @@ namespace Assets.Powerups.Smazo.Scripts
 {
     public class CigaPowerup : AbstractPowerup
     {
-        public int energyRegen = 20;
+        public uint energyRegen = 20;
 
         protected override void UsePowerup(PlayerControl player)
         {

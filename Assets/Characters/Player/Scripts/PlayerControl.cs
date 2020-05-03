@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Generic;
+﻿using Assets.Characters.Player.Scripts;
+using Assets.Scripts.Generic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,13 +10,10 @@ using UnityEngine;
 /// </summary>
 public class PlayerControl : AbstractCharacter
 { 
-
     /// <summary>
     /// Prefab of the dead player object that is to be spawned when the player dies.
     /// </summary>
     public GameObject deadPlayer;
-
-    public GameObject restartDialog;
 
     /// <summary>
     /// Guiding point for enemies. Instead of following the player's position, the will try to follow this point.
@@ -76,10 +74,7 @@ public class PlayerControl : AbstractCharacter
     protected override void OnDying()
     {
         // spawn the dead player
-        GameObject child = Instantiate(deadPlayer, transform.position, transform.rotation);
-
-        // display restart dialog
-        restartDialog.SetActive(true);
+        GameObject child = Instantiate(deadPlayer.gameObject, sprite.transform.position, transform.rotation);
     }
 
     protected override bool ShouldMove()
@@ -89,8 +84,10 @@ public class PlayerControl : AbstractCharacter
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         movementDirection.x = Input.GetAxis("Horizontal");
         movementDirection.y = Input.GetAxis("Vertical");
 
