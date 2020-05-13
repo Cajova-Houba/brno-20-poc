@@ -50,6 +50,15 @@ public class PlayerControl : AbstractCharacter
         return killedEnemies;
     }
 
+    /// <summary>
+    /// Uses triggerName to play pickedup animation using PickedUpPowerup object.
+    /// </summary>
+    /// <param name="triggerName">Name of the animation trigger.</param>
+    public void PlayPowerupPickedAnimation(string triggerName)
+    {
+        pickedUpPowerup.TriggerAnimation(triggerName);
+    }
+
     protected override float GetMovementSpeed()
     {
         if (isAttacking || IsStunned())

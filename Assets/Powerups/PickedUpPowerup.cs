@@ -23,11 +23,6 @@ namespace Assets.Powerups
             animator.SetTrigger(triggerName);
         }
 
-        void Start()
-        {
-
-        }
-
 
     }
 }
