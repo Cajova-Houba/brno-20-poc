@@ -1,4 +1,5 @@
 ﻿using Assets.Characters.Player.Scripts;
+using Assets.Powerups;
 using Assets.Scripts.Generic;
 using System;
 using System.Collections;
@@ -24,6 +25,11 @@ public class PlayerControl : AbstractCharacter
     /// Same as front target but this one is behind the player.
     /// </summary>
     public GameObject backTargetPoint;
+
+    /// <summary>
+    /// Object used to control animation displayed when a power up is pocked.
+    /// </summary>
+    public PickedUpPowerup pickedUpPowerup;
 
     bool attack1Pressed = false;
     bool attack2Pressed = false;

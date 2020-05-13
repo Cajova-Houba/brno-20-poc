@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class AbstractPowerup : MonoBehaviour
 {
+    public string animationTriggerName;
+
     /// <summary>
     /// Check if trigger with player happened.
     /// </summary>
@@ -16,9 +18,15 @@ public abstract class AbstractPowerup : MonoBehaviour
         if (pc != null)
         {
             Debug.Log("Player picks up power-up");
+            pc.PlayPowerupPickedAnimation(GetTriggerAnimationName());
             UsePowerup(pc);
             Destroy(gameObject);
         }
+    }
+
+    protected string GetTriggerAnimationName()
+    {
+        return animationTriggerName;
     }
 
     /// <summary>
