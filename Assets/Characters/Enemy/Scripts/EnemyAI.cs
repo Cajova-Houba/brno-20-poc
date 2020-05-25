@@ -28,6 +28,11 @@ public class EnemyAI : AbstractCharacter
     /// </summary>
     public GameObject[] powerups;
 
+    /// <summary>
+    /// Dead enemy to spawn.
+    /// </summary>
+    public GameObject deadEnemy;
+
     public bool isPassive = false;
 
     /// <summary>
@@ -109,6 +114,7 @@ public class EnemyAI : AbstractCharacter
     protected override void OnDying()
     {
         SpawnPowerup();
+        GameObject child = Instantiate(deadEnemy.gameObject, sprite.transform.position, transform.rotation);
     }
 
     protected override bool ShouldMove()

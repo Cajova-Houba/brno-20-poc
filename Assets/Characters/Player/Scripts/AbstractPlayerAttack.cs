@@ -15,6 +15,10 @@ namespace Assets.Characters.Player.Scripts
         /// </summary>
         public PlayerControl playerControl;
 
+        private List<AudioSource> attackSounds;
+
+        private System.Random random = new System.Random();
+
         public override bool IsInAttackingRange()
         {
             return true;
@@ -27,6 +31,12 @@ namespace Assets.Characters.Player.Scripts
 
             // detect hit enemies
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, targetLayer);
+
+            // play sound if at least one enemy was hit
+            if (hitEnemies.Length > 0)
+            {
+                PlayAttackSound();
+            }
 
             // damage all enemies
             int deadEnemies = 0;
@@ -44,6 +54,32 @@ namespace Assets.Characters.Player.Scripts
             }
 
             return deadEnemies;
+        }
+
+        void Start()
+        {
+            // get attack sounds
+            GameObject[] soundObjects = GameObject.FindGameObjectsWithTag("PlayerAttackSound");
+            attackSounds = new List<AudioSource>();
+            foreach(GameObject soundObject in soundObjects)
+            {
+                AudioSource audio = soundObject.GetComponent<AudioSource>();
+                if (audio != null)
+                {
+                    attackSounds.Add(audio);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Randomly plays one attack sound.
+        /// </summary>
+        private void PlayAttackSound()
+        {
+            if (attackSounds != null && attackSounds.Count > 0)
+            {
+                attackSounds[random.Next(attackSounds.Count)].Play();
+            }
         }
     }
 }

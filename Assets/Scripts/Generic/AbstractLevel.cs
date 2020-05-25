@@ -31,6 +31,14 @@ namespace Assets.Scripts.Generic
         /// </summary>
         public float dyingAnimationDuration;
 
+        /// <summary>
+        /// May be called by IntroPlayer.
+        /// </summary>
+        public virtual void OnIntroEnd()
+        {
+
+        }
+
         protected bool playerDied;
 
         protected bool CheckDeadPlayer()

@@ -12,6 +12,11 @@ namespace Assets.Scripts.Levels
     {
         public YouWonDialog youWonDialog;
 
+        public override void OnIntroEnd()
+        {
+            Time.timeScale = 1f;
+        }
+
         public override string GetLevelSceneName()
         {
             return "Vecerka";
@@ -33,6 +38,9 @@ namespace Assets.Scripts.Levels
             {
                 player.SetCharacterStats(stats);
             }
+
+            // turned on by intro
+            Time.timeScale = 0f;
         }
 
         protected override void HandleLevelUpdate()
