@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    public AudioSource buttonClickSound;
 
     public void StartGame()
     {

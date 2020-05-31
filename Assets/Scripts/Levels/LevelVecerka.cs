@@ -12,9 +12,12 @@ namespace Assets.Scripts.Levels
     {
         public YouWonDialog youWonDialog;
 
+        public AudioSource levelMusic;
+
         public override void OnIntroEnd()
         {
             Time.timeScale = 1f;
+            levelMusic.Play();
         }
 
         public override string GetLevelSceneName()

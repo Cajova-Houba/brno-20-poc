@@ -13,6 +13,8 @@ public class GameOverDialog: MonoBehaviour
     /// </summary>
     public AbstractLevel level;
 
+    public AudioSource levelMusic;
+
     public GameObject backButton;
 
     private bool isPaused = false;
@@ -29,6 +31,7 @@ public class GameOverDialog: MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f;
+        levelMusic.Pause();
         backButton.SetActive(true);
         gameObject.SetActive(true);
     }
@@ -52,6 +55,7 @@ public class GameOverDialog: MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f;
+        levelMusic.UnPause();
         backButton.SetActive(false);
         gameObject.SetActive(false);
     }
