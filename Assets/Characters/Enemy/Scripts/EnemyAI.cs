@@ -172,8 +172,21 @@ public class EnemyAI : AbstractCharacter
     /// Results are stored in rayPoints and availableRayPaths array.
     /// </summary>
     private void CalculateRayPoints()
-    { 
-        float baseAngle = (float)Math.Atan2(movementDirection.y, movementDirection.x) * 180 / (float)Math.PI;
+    {
+        // general direction rays point to
+        // half of the rays is spred in baseAngle-90, the other half is spread in baseAngle+90
+        float baseAngle;
+        
+        // if the player is set, use his direction to calculate base angle
+        // otherwise use current movementDirection (results in 'random walk')
+        if (player != null)
+        {
+            Vector2 playerDirection = MoveToPlayerTarget();
+            baseAngle = (float)Math.Atan2(playerDirection.y, playerDirection.x) * 180 / (float)Math.PI;
+        } else
+        {
+            baseAngle = (float)Math.Atan2(movementDirection.y, movementDirection.x) * 180 / (float)Math.PI;
+        }
         int angleStep = movementAngleRange / PATH_RAY_COUNT;
         float halfRange = movementAngleRange / 2;
         float magnitude = 1.5f;
@@ -248,8 +261,6 @@ public class EnemyAI : AbstractCharacter
         base.Update();
 
         GameObject playerObj = GameObject.FindGameObjectWithTag(SettingsHolder.playerTagName);
-        CalculateRayPoints();
-
         if (playerObj == null)
         {
             Debug.Log("No game object with tag " + SettingsHolder.playerTagName + " found.");
@@ -264,7 +275,7 @@ public class EnemyAI : AbstractCharacter
         {
             Debug.Log(name + " is near player.");
             //movementDirection = player.position - transform.position;
-            MoveToPlayerTarget();
+            movementDirection = MoveToPlayerTarget();
             if (!attacking)
             {
                 if (nextAttackToUse == null)
@@ -279,6 +290,10 @@ public class EnemyAI : AbstractCharacter
                     StartCoroutine(UseAndResetAttack());
                 }
             }
+        } else
+        {
+            // move 'randomly' in player's direction
+            CalculateRayPoints();
         }
     }
 
@@ -287,12 +302,14 @@ public class EnemyAI : AbstractCharacter
     /// By using the target points, enemies will not follow the player himself, but rather one of 
     /// these target points from which they can attack him comfortably.
     /// </summary>
-    /// <returns></returns>
-    private void MoveToPlayerTarget()
+    /// 
+    /// <returns>Selected direction</returns>
+    private Vector2 MoveToPlayerTarget()
     {
         if (player == null || player.GetComponent<PlayerControl>() == null)
         {
             Debug.Log("Valid player object not set.");
+            return new Vector2(0, 0);
         }
         else
         {
@@ -302,10 +319,10 @@ public class EnemyAI : AbstractCharacter
             // pick the one that is nearer this enemy
             if (frontT.sqrMagnitude <= backT.sqrMagnitude)
             {
-                movementDirection = frontT;
+                return frontT;
             } else
             {
-                movementDirection = backT;
+                return backT;
             }
         }
     }
@@ -395,7 +412,7 @@ public class EnemyAI : AbstractCharacter
 
 
     /// <summary>
-    /// Draw are of the enemy's box colider.
+    /// Draw area of the enemy's box colider and casts used to navigate through the map.
     /// </summary>
     void OnDrawGizmosSelected()
     {
