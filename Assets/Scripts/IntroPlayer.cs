@@ -29,8 +29,13 @@ namespace Assets.Scripts
         {
             if (Input.GetKeyUp(KeyCode.Space))
             {
-                videoPlayer.playbackSpeed = 1000f;
+                SkipIntro();
             }
+        }
+
+        void SkipIntro()
+        {
+            videoPlayer.playbackSpeed = 1000f;
         }
 
         void OnVideoEnd(VideoPlayer vp)

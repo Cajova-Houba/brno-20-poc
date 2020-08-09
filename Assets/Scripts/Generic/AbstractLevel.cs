@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Generic
 {
+    /// <summary>
+    /// Abstract class for levels. Time is freezed in the Start() method and then started in OnIntroEnd().
+    /// </summary>
     public abstract class AbstractLevel : MonoBehaviour
     {
         public PlayerControl player;
@@ -32,11 +35,20 @@ namespace Assets.Scripts.Generic
         public float dyingAnimationDuration;
 
         /// <summary>
+        /// Audio source for the level music.
+        /// </summary>
+        public AudioSource levelMusic;
+
+        /// <summary>
         /// May be called by IntroPlayer.
         /// </summary>
         public virtual void OnIntroEnd()
         {
-
+            Time.timeScale = 1f;
+            if (levelMusic != null)
+            {
+                levelMusic.Play();
+            }
         }
 
         protected bool playerDied;
@@ -49,6 +61,9 @@ namespace Assets.Scripts.Generic
         protected virtual void Start()
         {
             playerDied = false;
+            
+            // turned on by intro
+            Time.timeScale = 0f;
         }
 
         /// <summary>
